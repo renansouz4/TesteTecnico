@@ -1,0 +1,58 @@
+package SpreadsheetsSapGui;
+
+
+public class ObjectPlanListPrice {
+	
+	private String SQ_COD;
+
+	private String NOME_PLANO;
+
+	private String TECNOLOGIA;
+	
+	private String LP;
+
+	public ObjectPlanListPrice(){}
+
+	public ObjectPlanListPrice(String SQ_COD, String NOME_PLANO, String TECNOLOGIA, String LP){
+	this.SQ_COD = SQ_COD;
+	this.NOME_PLANO = NOME_PLANO;
+	this.TECNOLOGIA = TECNOLOGIA;
+	this.LP = LP;
+	}
+
+	public String getSQ_COD() {
+		return SQ_COD;
+	}
+
+	public void setSQ_COD(String sQ_COD) {
+		SQ_COD = sQ_COD;
+	}
+
+	public String getNOME_PLANO() {
+		return NOME_PLANO;
+	}
+
+	public void setNOME_PLANO(String nOME_PLANO) {
+		NOME_PLANO = nOME_PLANO;
+	}
+
+	public String getTECNOLOGIA() {
+		return TECNOLOGIA;
+	}
+
+	public void setTECNOLOGIA(String tECNOLOGIA) {
+		TECNOLOGIA = tECNOLOGIA;
+	}
+
+	public String getLP() {
+		return LP;
+	}
+
+	public void setLP(String lP) {
+		LP = lP;
+	}
+	
+	
+
+
+}

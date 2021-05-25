@@ -1,0 +1,146 @@
+package TestCases;
+
+import static org.junit.Assert.*;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+import com.relevantcodes.extentreports.LogStatus;
+
+import ActionFindElementSelenium.AcoesFindElement;
+import Actions.PlanoAction;
+import Actions.PromocaoAction;
+import BancoDeDados.ConexaoComBancoDados;
+import ConstantsFramework.Constants_Framework;
+import ConstantsSuiteTests.ConstantsSpreadsheet;
+import EnumsDrivers.DriverType;
+import Json.Constants_JSON;
+import Json.JSONParserUtil;
+import Json.TestCaseObject;
+import ManagersDriver.WebDriverManager;
+import Report.ExtentReport;
+import Report.Report;
+import Spreadsheet.ObjectEnvironment;
+import Spreadsheet.Spreadsheet;
+
+
+@RunWith(Parameterized.class)
+public class TestCaseDesativaProjeto {
+
+	@Rule
+	public TestWatcher watchman = new TestWatcher() {
+		@Override
+		protected void failed(Throwable e, Description description) {
+			// reportHTML.test.log(LogStatus.FAIL, "TestCase finalizado com erro");
+			// AtualizarStatus.atualizarPlanilha(Constants.EXCEL_CRIAR_PLANO,TEST_CASE_ID,
+			// "FALIED");
+		}
+
+		@Override
+		protected void succeeded(Description description) {
+			// reportHTML.test.log(LogStatus.PASS, "TestCase finalizado com sucesso");
+			// AtualizarStatus.atualizarPlanilha(Constants.EXCEL_CRIAR_PLANO,TEST_CASE_ID,
+			// "PASSED");
+		}
+	};
+
+	private WebDriver driver;
+	ExtentReport reportHTML = new ExtentReport();
+	Report report;
+	AcoesFindElement acoesFindElement;
+
+	private String NOME_PROJETO;	
+
+
+
+	public TestCaseDesativaProjeto(String NOME_PROJETO ) {        
+ 
+		this.NOME_PROJETO = NOME_PROJETO;                    
+	}
+
+	@Before
+	public void setUp() {
+		driver = WebDriverManager.getDriver(DriverType.INTERNETEXPLORER);
+		report = new Report(driver);
+		acoesFindElement = new AcoesFindElement();
+	}
+
+	@Parameterized.Parameters
+	public static Collection<Object> input() {
+		Object[] objeto = Spreadsheet.getStringSpreadsheetProjetosDesativa();
+		return Arrays.asList(objeto);
+	}
+
+	@Test
+	public void desativacaoProjetoLinks() {
+		
+		//Strings constates
+		String Cont_user = "teste_desativacao";
+		String Cont_pass = "claro#123";
+		
+		//Elementos		
+		String URL_LINK="http://sabino/testlink/login.php";
+	    By inputUserName = By.name("tl_login");
+	    By inputPassName = By.name("tl_password");
+	    By clickButtonEntrar = By.name("login_submit");
+	    By clickLinkGerenciaProj = By.xpath("//a[@href='lib/project/projectView.php']");
+	    By inputNameProjeto = By.id("name");
+	    By clickButtonSeach = By.id("search");
+	    By clickButtonDesativa = By.xpath("//*[starts-with(@title, 'Active (click to set inactive)')]");
+		
+		reportHTML.test = ExtentReport.extent.startTest(NOME_PROJETO);
+		reportHTML.test.log(LogStatus.INFO, "Iniciando desativacao do projeto "+NOME_PROJETO+" .");		
+		reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+		acoesFindElement.openURL(driver, URL_LINK);
+		acoesFindElement.fillInput(driver, inputUserName, Cont_user);
+		acoesFindElement.fillInput(driver, inputPassName, Cont_pass);
+		acoesFindElement.click(driver, clickButtonEntrar);
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		driver.switchTo().frame(driver.findElement(By.name("mainframe")));
+		driver.switchTo().activeElement();
+		acoesFindElement.click(driver, clickLinkGerenciaProj);
+		acoesFindElement.fillInput(driver, inputNameProjeto, NOME_PROJETO);
+		acoesFindElement.click(driver, clickButtonSeach);
+		acoesFindElement.click(driver, clickButtonDesativa);
+		acoesFindElement.fillInputClear(driver, inputNameProjeto, NOME_PROJETO);
+		acoesFindElement.click(driver, clickButtonSeach);
+		
+		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	@After
+	public void fim() throws Exception {
+		ExtentReport.extent.flush();
+		//driver.close();
+	   // driver.quit();
+	}
+
+
+}

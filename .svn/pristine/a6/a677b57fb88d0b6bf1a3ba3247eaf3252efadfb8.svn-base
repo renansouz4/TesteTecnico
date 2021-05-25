@@ -1,0 +1,11 @@
+package ConstantsSuiteTests;
+public class ConstanteV  {
+
+	public static final String ATIVAR = "1";
+	public static final String DESATIVAR = "0";
+	
+	public static final String MSG_PLANO_RESERVADO_CRIADO_SUCESSO = "Plano Incluído com sucesso.";
+	public static final String MSG_PLANO_RESERVADO_ATIVADO_SUCESSO = "Plano Salvo com sucesso.";
+	public static final String MSG_PLANO_RESERVADO_ALTERADO_SUCESSO = "Plano Alterado com sucesso.";
+	
+}

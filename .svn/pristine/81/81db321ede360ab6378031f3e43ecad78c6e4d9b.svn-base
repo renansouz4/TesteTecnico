@@ -1,0 +1,192 @@
+package TestCases;
+
+import static org.junit.Assert.*;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.openqa.selenium.WebDriver;
+
+import com.relevantcodes.extentreports.LogStatus;
+
+import Actions.PlanoAction;
+import Actions.PromocaoAction;
+import BancoDeDados.ConexaoComBancoDados;
+import ConstantsFramework.Constants_Framework;
+import ConstantsSuiteTests.ConstantsSpreadsheet;
+import EnumsDrivers.DriverType;
+import Json.Constants_JSON;
+import Json.JSONParserUtil;
+import Json.TestCaseObject;
+import ManagersDriver.WebDriverManager;
+import Report.ExtentReport;
+import Report.Report;
+import Spreadsheet.ObjectEnvironment;
+import Spreadsheet.Spreadsheet;
+
+
+@RunWith(Parameterized.class)
+public class TestCasePromocao {
+
+	@Rule
+	public TestWatcher watchman = new TestWatcher() {
+		@Override
+		protected void failed(Throwable e, Description description) {
+			// reportHTML.test.log(LogStatus.FAIL, "TestCase finalizado com erro");
+			// AtualizarStatus.atualizarPlanilha(Constants.EXCEL_CRIAR_PLANO,TEST_CASE_ID,
+			// "FALIED");
+		}
+
+		@Override
+		protected void succeeded(Description description) {
+			// reportHTML.test.log(LogStatus.PASS, "TestCase finalizado com sucesso");
+			// AtualizarStatus.atualizarPlanilha(Constants.EXCEL_CRIAR_PLANO,TEST_CASE_ID,
+			// "PASSED");
+		}
+	};
+
+	private WebDriver driver;
+	ExtentReport reportHTML = new ExtentReport();
+	Report report;
+	PromocaoAction promocaoAction;
+	PlanoAction planoAction;
+	ConexaoComBancoDados bancoDeDados;
+	ObjectEnvironment environment;
+
+	private String TEST_CASE_NAME;	
+	private String PLOMOCAO_ID;
+	private String STATUS;
+	private String NOME_PROMOCAO;
+	private String DESC_PROMOCAO;
+	private String DT_INICIO;
+	private String DT_FIM;
+	private String AQUISICAO_APARELHO;
+	private String TIPO_PROMOCAO;
+	private String LISTA_CANAL;
+	private String ESTADOS;
+	private String SUB_TIPO;
+	private String CODIGO_WA;
+	private String LISTA_OFFERS;
+	private String LISTA_PRAZO_OFFER;
+	private String PLANO;
+	private String LISTA_TIPO_OPERACAO;
+	private String ID_PLANTA;
+
+	public TestCasePromocao(String PLOMOCAO_ID        ,
+			                     String STATUS             ,
+			                     String NOME_PROMOCAO      ,
+			                     String DESC_PROMOCAO      ,
+			                     String DT_INICIO          ,
+			                     String DT_FIM             ,
+			                     String AQUISICAO_APARELHO ,
+			                     String TIPO_PROMOCAO      ,
+			                     String LISTA_CANAL        ,
+		                      	 String ESTADOS            ,
+			                     String SUB_TIPO           ,
+			                     String CODIGO_WA          ,
+			                     String LISTA_OFFERS       ,
+			                     String LISTA_PRAZO_OFFER  ,
+			                     String PLANO              ,
+			                     String LISTA_TIPO_OPERACAO,
+			                     String ID_PLANTA           ) {        
+
+		this.PLOMOCAO_ID = PLOMOCAO_ID;        
+		this.STATUS = STATUS;            
+		this.NOME_PROMOCAO = NOME_PROMOCAO;      
+		this.DESC_PROMOCAO = DESC_PROMOCAO;      
+		this.DT_INICIO = DT_INICIO;         
+		this.DT_FIM = DT_FIM;             
+		this.AQUISICAO_APARELHO = AQUISICAO_APARELHO.substring(0, 1); 
+		this.TIPO_PROMOCAO = TIPO_PROMOCAO;      
+		this.LISTA_CANAL = LISTA_CANAL;              
+		this.ESTADOS = ESTADOS;            
+		this.SUB_TIPO = SUB_TIPO;           
+		this.CODIGO_WA = CODIGO_WA;          
+		this.LISTA_OFFERS = LISTA_OFFERS;       
+		this.LISTA_PRAZO_OFFER = LISTA_PRAZO_OFFER;       
+		this.PLANO = PLANO;              
+		this.LISTA_TIPO_OPERACAO = LISTA_TIPO_OPERACAO;      
+		this.ID_PLANTA = ID_PLANTA; 
+	}
+
+	@Before
+	public void setUp() {
+		driver = WebDriverManager.getDriver(DriverType.INTERNETEXPLORER);
+		report = new Report(driver);
+		promocaoAction = new PromocaoAction(driver,reportHTML,report);
+		planoAction = new PlanoAction(driver,reportHTML,report);
+		bancoDeDados = new ConexaoComBancoDados();
+		environment = new ObjectEnvironment(Arrays.asList(Spreadsheet.getStringSpreadsheetAmbiente()));
+
+	}
+
+	@Parameterized.Parameters
+	public static Collection<Object> input() {
+		Object[] objeto = Spreadsheet.getStringSpreadsheetPromocoes(ConstantsSpreadsheet.EXCEL_PROMOCOES);
+		return Arrays.asList(objeto);
+	}
+
+	@Test
+	public void promocaoTest() {
+		
+		reportHTML.test = ExtentReport.extent.startTest(TEST_CASE_NAME);
+		reportHTML.test.log(LogStatus.INFO, "Iniciando Teste do sistema de parametrizacao da Claro...");		
+		reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+		planoAction.realizarLogin(environment.getUSER_SISTEMA(), environment.getPASS_SISTEMA());
+		
+		String ValueTripleA  = "INDIFERENTE";
+		String tipoPromocao = "Promoção";
+		String selectTipoPromocao = "Promoção Aquisição (AQUISICAO)";
+		String perfilPromocao = "Todos";
+		String tipoCenarioPromo = "Outros";
+		
+		promocaoAction.criarPromocao(NOME_PROMOCAO      ,
+				                     DESC_PROMOCAO      ,
+				                     DT_INICIO          ,
+				                     DT_FIM             ,
+				                     ValueTripleA       ,
+				                     tipoPromocao       ,
+				                     AQUISICAO_APARELHO ,
+				                     selectTipoPromocao,
+				                     LISTA_CANAL        ,
+				                     perfilPromocao    ,
+				                     tipoCenarioPromo  ,
+				                     SUB_TIPO    ,
+				                     ESTADOS);
+
+	}
+
+	@After
+	public void fim() throws Exception {
+	//	ExtentReport.extent.flush();
+	//	report.createReportPdf(TEST_CASE_NAME);
+		//writeJsonFile();
+		// driver.close();
+	     //driver.quit();
+	}
+
+	private void writeJsonFile() {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
+		objectMap.put(Constants_JSON.JSON_DATA_TESTE, dtf.format(now));
+		objectMap.put(Constants_JSON.JSON_AMBIENTE, environment.getENVIRONMENT());
+	//	objectMap.put(Constants_JSON.JSON_NOME_PLANO_RESERVADO, this.NOME_PLANO_RESERVADO);
+
+		TestCaseObject testCaseObject = new TestCaseObject(this.PLOMOCAO_ID, objectMap);
+		JSONParserUtil.writeJsonFile(testCaseObject);
+	}
+
+}

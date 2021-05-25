@@ -1,0 +1,9 @@
+package ConstantsSuiteTests;
+
+public class ConstantsSpreadsheet {
+	
+	public static final String EXCEL_PLANO = System.getProperty("user.dir") + "\\resources\\spreadsheets\\Excel_Plano.xlsx";
+	public static final String EXCEL_AMBIENTE= System.getProperty("user.dir") + "\\resources\\spreadsheets\\Excel_Ambiente.xlsx";
+	public static final String EXCEL_PROMOCOES= System.getProperty("user.dir") + "\\resources\\spreadsheets\\Excel_Promocoes.xlsx";
+
+}

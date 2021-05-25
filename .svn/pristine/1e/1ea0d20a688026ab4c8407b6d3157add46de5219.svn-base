@@ -1,0 +1,144 @@
+package InterfaceGrafica;
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JList;
+import javax.swing.JTextPane;
+import javax.swing.JTable;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
+
+import ConstantsSuiteTests.ConstantsSpreadsheet;
+import Spreadsheet.Spreadsheet;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import java.awt.Color;
+import javax.swing.ListSelectionModel;
+import java.awt.SystemColor;
+import java.awt.Font;
+import javax.swing.border.LineBorder;
+import javax.swing.JLabel;
+
+public class InterfaceGraficaListaPreco extends JDialog {
+
+	private final JPanel contentPanel = new JPanel();
+	private JTable table;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		try {
+			InterfaceGraficaListaPreco dialog = new InterfaceGraficaListaPreco();
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//Spreadsheet pl = new Spreadsheet ();
+		
+		
+	//	pl.getStringSpreadsheetListaPreco(ConstantsSpreadsheet.EXCEL_LISTA_PRECO);
+		
+	}
+
+	/**
+	 * Create the dialog.
+	 */
+	public InterfaceGraficaListaPreco() {
+		setBounds(400, 400, 750, 600);
+		getContentPane().setLayout(new BorderLayout());
+		contentPanel.setBackground(new Color(176, 224, 230));
+		contentPanel.setForeground(Color.CYAN);
+		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setForeground(SystemColor.desktop);
+		scrollPane.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		scrollPane.setBackground(new Color(255, 0, 255));
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(32, 178, 170));
+		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
+		gl_contentPanel.setHorizontalGroup(
+			gl_contentPanel.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_contentPanel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_contentPanel.createParallelGroup(Alignment.TRAILING)
+						.addComponent(scrollPane, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 688, GroupLayout.PREFERRED_SIZE)
+						.addComponent(panel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 688, Short.MAX_VALUE))
+					.addContainerGap())
+		);
+		gl_contentPanel.setVerticalGroup(
+			gl_contentPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_contentPanel.createSequentialGroup()
+					.addGap(8)
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE)
+					.addGap(31)
+					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 372, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(41, Short.MAX_VALUE))
+		);
+		
+		JLabel lblNewLabel = new JLabel("Informa\u00E7\u00F5es da planilha de lista de pre\u00E7o");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 26));
+		lblNewLabel.setLabelFor(this);
+		panel.add(lblNewLabel);
+		{
+			table = new JTable();
+			table.setFont(new Font("Tahoma", Font.PLAIN, 12));
+			table.setBackground(new Color(248, 248, 255));
+			table.setForeground(SystemColor.desktop);
+			table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			Spreadsheet pl = new Spreadsheet ();			
+			//pl.getStringSpreadsheetListaPreco(ConstantsSpreadsheet.EXCEL_LISTA_PRECO);
+			
+			/*table.setModel(new DefaultTableModel(
+				new Object[][] {
+					{"oi", null, null, null},
+					{null, null, null, null},
+				},*/
+			table.setModel(new DefaultTableModel(Spreadsheet.getStringSpreadsheetListaPreco(ConstantsSpreadsheet.EXCEL_LISTA_PRECO),
+			
+				new String[] {
+					"SQ_COD", "Nome do plano", "Tecnologia", "LP"
+				}
+			));
+			scrollPane.setViewportView(table);
+		}
+		contentPanel.setLayout(gl_contentPanel);
+		{
+			JPanel buttonPane = new JPanel();
+			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+			getContentPane().add(buttonPane, BorderLayout.SOUTH);
+			{
+				JButton okButton = new JButton("OK");
+				okButton.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent arg0) {
+						
+						System.out.println("HAHAHAHA");
+					}
+				});
+				okButton.setActionCommand("OK");
+				buttonPane.add(okButton);
+				getRootPane().setDefaultButton(okButton);
+			}
+			{
+				JButton cancelButton = new JButton("Cancel");
+				cancelButton.setActionCommand("Cancel");
+				buttonPane.add(cancelButton);
+			}
+		}
+	}
+}

@@ -1,0 +1,16 @@
+package PageObjects;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+public class AssociarPlanoPageObject {
+	
+	public static final By linkPlano = By.id("imgsub600");
+	public static final By linkAssociarPlano = By.xpath("//a[@href='/ClaroAdministradorWeb/PlanAlterarPlano.do']");
+	public static final By selectEstados = By.name("estado");
+	public static final By inputNomePlano = By.name("nomePlano");
+	public static final By selectTiposPlano = By.name("tipoPlanos");
+	
+
+
+}

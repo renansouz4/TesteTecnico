@@ -1,0 +1,59 @@
+package Actions;
+
+import org.openqa.selenium.WebDriver;
+
+import ActionFindElementSelenium.AcoesFindElement;
+import ConstantsSuiteTests.ConstanteUrlBroweser;
+import PageObjects.AlterarPlanoPageObject;
+import PageObjects.CriarPlanoPageObject;
+import PageObjects.CriarPromocaoPageObject;
+import Report.ExtentReport;
+import Report.Report;
+
+/**
+ * - Class Action
+ * 
+ * @author rodrigo.c.almeida
+ * 
+ */
+public class PromocaoAction extends AcoesFindElement {
+
+	private WebDriver driver;
+	String URL = ConstanteUrlBroweser.URL_CLARO;
+	private ExtentReport reportHTML;
+	private Report report;
+
+	/**
+	 * - Construtor da Class.
+	 */
+	public PromocaoAction(WebDriver driver, ExtentReport reportHTML, Report report) {
+		this.driver = driver;
+		this.reportHTML = reportHTML;
+		this.report = report;
+	}
+
+	/**
+	 * - Método responsável por criar a promocao.
+	 */
+	public void criarPromocao(String nomePromocao, String descPromocao, String dataInicio, String dataFim,
+			String ValueTripleA, String tipoPromocao, String aquisicaoAparelho, String selectTipoPromocao,
+			String listaCanal, String perfilPromocao, String tipoCenarioPromo, String subTipoCliente, String estados) {
+		click(driver, CriarPromocaoPageObject.linkPromocao);
+		click(driver, CriarPromocaoPageObject.linkCriarPromocao);
+		fillInput(driver, CriarPromocaoPageObject.inputNomePromocao, nomePromocao);
+		fillInput(driver, CriarPromocaoPageObject.inputDescPromocao, descPromocao);
+		fillInput(driver, CriarPromocaoPageObject.inputDataInicio, dataInicio);
+		fillInput(driver, CriarPromocaoPageObject.inputDataFim, dataFim);
+		clickCheckbox(driver, CriarPromocaoPageObject.checkedTripleA, ValueTripleA);
+		clickCheckbox(driver, CriarPromocaoPageObject.checkedTipoPromo, tipoPromocao);
+		clickCheckbox(driver, CriarPromocaoPageObject.checkedAquisicaoAparelho, aquisicaoAparelho);
+		selectElementVisibleText(driver, CriarPromocaoPageObject.selectTipoPromocao, selectTipoPromocao);
+		clickCheckbox(driver, CriarPromocaoPageObject.checkedCanalPromocao, listaCanal);
+		clickCheckbox(driver, CriarPromocaoPageObject.checkedperfilPromo, perfilPromocao);
+		clickCheckbox(driver, CriarPromocaoPageObject.checkedTipoCenario, tipoCenarioPromo);
+		clickCheckbox(driver, CriarPromocaoPageObject.checkedSubTipoCliente, subTipoCliente);
+		clickCheckbox(driver, CriarPromocaoPageObject.checkedEstados, estados);
+		
+	}
+
+}

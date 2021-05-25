@@ -1,0 +1,22 @@
+package PageObjects;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+public class AtivarPlanoPageObject {
+	
+	public static final By linkPlano = By.id("imgsub600");
+	public static final By linkAtivarPlano = By.xpath("//a[@href='/ClaroAdministradorWeb/PlanAtivarDesativarPlano.do']");
+	public static final By selectEstado = By.name("estado");
+	public static final By inputNomePlano = By.name("nomePlano");
+	public static final By buttonPesquisa = By.xpath("/HTML/BODY/CENTER/TABLE/TBODY/TR[2]/TD[2]/FORM/TABLE[3]/TBODY/TR[3]/TD/INPUT[2]");
+	public static final By selectTiposPlanos = By.name("tipoPlanos");
+	public static final By checkFlagAtivarDest = By.name("flagAtivo");
+	public static final By inputDataAtivarDest = By.name("dataAtivaDesativaPlano");
+	public static final By buttonSalva = By.xpath("//*[starts-with(@value, 'Salvar')]");
+	public static final By getTextMensagemAtivacaoSucesso = By.xpath("/HTML/BODY/CENTER/TABLE/TBODY/TR[2]/TD[2]/FORM/TABLE[2]/TBODY/TR/TD/SPAN");
+
+	
+
+
+}

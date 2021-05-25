@@ -1,0 +1,171 @@
+package Actions;
+
+import static org.junit.Assert.fail;
+
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+import com.relevantcodes.extentreports.LogStatus;
+
+import ActionFindElementSelenium.AcoesFindElement;
+import ConstantsSuiteTests.ConstanteUrlBroweser;
+import ConstantsSuiteTests.ConstanteV;
+import PageObjects.AlterarPlanoPageObject;
+import PageObjects.AssociarPlanoPageObject;
+import PageObjects.AssociarPromocaoPageObject;
+import PageObjects.CriarPromocaoPageObject;
+import Report.ExtentReport;
+import Report.Report;
+
+/**
+ * - Class Action
+ * 
+ * @author rodrigo.c.almeida
+ * 
+ */
+public class PromocaoAction extends AcoesFindElement {
+
+	private WebDriver driver;
+	String URL = ConstanteUrlBroweser.URL_CLARO;
+	private ExtentReport reportHTML;
+	private Report report;
+
+	/**
+	 * - Construtor da Class.
+	 */
+	public PromocaoAction(WebDriver driver, ExtentReport reportHTML, Report report) {
+		this.driver = driver;
+		this.reportHTML = reportHTML;
+		this.report = report;
+	}
+
+	/**
+	 * - Método responsável por criar a promocao.
+	 */
+	public void criarPromocao(String nomePromocao, String descPromocao, String dataInicio, String dataFim,
+			String ValueTripleA, String tipoPromocao, String aquisicaoAparelho, String selectTipoPromocao,
+			String listaCanal, String perfilPromocao, String tipoCenarioPromo, String subTipoCliente, String estados) {
+		click(driver, CriarPromocaoPageObject.linkPromocao);
+		click(driver, CriarPromocaoPageObject.linkCriarPromocao);
+		fillInput(driver, CriarPromocaoPageObject.inputNomePromocao, nomePromocao);
+		fillInput(driver, CriarPromocaoPageObject.inputDescPromocao, descPromocao);
+		fillInput(driver, CriarPromocaoPageObject.inputDataInicio, dataInicio);
+		fillInput(driver, CriarPromocaoPageObject.inputDataFim, dataFim);
+		clickCheckbox(driver, CriarPromocaoPageObject.checkedTripleA, ValueTripleA);
+		clickCheckbox(driver, CriarPromocaoPageObject.checkedTipoPromo, tipoPromocao);
+		clickCheckbox(driver, CriarPromocaoPageObject.checkedAquisicaoAparelho, aquisicaoAparelho);
+		selectElementVisibleText(driver, CriarPromocaoPageObject.selectTipoPromocao, selectTipoPromocao);
+		clickCheckboxTableCanalPromocao(driver, listaCanal);
+		clickCheckboxTablePerfilPromocao(driver, perfilPromocao);
+		clickCheckboxTableTipoCenarioPromo(driver, tipoCenarioPromo);
+		clickCheckboxTableSubTipos(driver, subTipoCliente);
+		clickCheckboxTableEstadosPromocao(driver);
+
+		//isSelectedTrueUFDDD(driver, "DDD21");
+
+		
+		  click(driver, CriarPromocaoPageObject.clickButtonCriar); Alert alert_box =
+		  driver.switchTo().alert(); alert_box.accept();
+		  
+		  System.out.println(getText(driver,
+		  CriarPromocaoPageObject.getTextMensagemFinal));
+		  
+		  if (getText(driver, CriarPromocaoPageObject.getTextMensagemFinal)
+		  .contains("sucesso")) { reportHTML.test.log(LogStatus.PASS,
+		  "Promocao criada com sucesso"); reportHTML.test.log(LogStatus.PASS,
+		  reportHTML.test.addScreenCapture(report.capturar())); } else {
+		  reportHTML.test.log(LogStatus.FAIL, "Erro na criacao da promocao");
+		  reportHTML.test.log(LogStatus.FAIL,
+		  reportHTML.test.addScreenCapture(report.capturar()));
+		  fail("Erro na criacao da promocao"); }
+		 
+	}
+
+	/**
+	 * - Método responsável por associar a promocao.
+	 */
+	public void associarPromocao(String tipoPromocao, String vigenciaPromocao, String nomePromocao, String nomeOffer,
+			String nomePlano, String nomeOperacao) {
+		click(driver, CriarPromocaoPageObject.linkPromocao);
+		click(driver, AssociarPromocaoPageObject.linkAssociarPromocao);
+		clickCheckbox(driver, AssociarPromocaoPageObject.checkedTipoPromocao, tipoPromocao);
+		clickCheckbox(driver, AssociarPromocaoPageObject.checkedVigenciaPromocao, vigenciaPromocao);
+		fillInput(driver, AssociarPromocaoPageObject.inputNomePromocao, nomePromocao);
+		click(driver, AssociarPromocaoPageObject.clickButtonPesquisa);
+		selectElementByIndexMethod(driver, AssociarPromocaoPageObject.selectListaPromocao, 1);
+
+		if (!nomeOffer.equals("null")) {
+			int contador = nomeOffer.length();
+			int posicaoDinamica = 0;
+			for (int i = 0; i < contador; i++) {
+				if (nomeOffer.substring(i, i + 1).equals(";")) {
+					int posicao = i;
+					System.out.println(nomeOffer.substring(posicaoDinamica, posicao));
+					String nomeOfferTratado = nomeOffer.substring(posicaoDinamica, posicao);
+
+					fillInput(driver, AssociarPromocaoPageObject.inputNomeoffer, nomeOfferTratado);
+					click(driver, AssociarPromocaoPageObject.clickButtonFiltrarOffers);
+
+					reportHTML.test.log(LogStatus.INFO, "Iniciando a associando a Offer: " + nomeOfferTratado);
+
+					reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+
+					selectElementVisibleTextS(driver, AssociarPromocaoPageObject.selectListaOffers,
+							AssociarPromocaoPageObject.teste, nomeOfferTratado);
+					click(driver, AssociarPromocaoPageObject.clickButtonAddOffers);
+
+					reportHTML.test.log(LogStatus.INFO, "Offer Nativa: " + nomeOfferTratado + " associada com sucesso");
+					reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+					posicaoDinamica = posicao + 1;
+				}
+			}
+		} else {
+			reportHTML.test.log(LogStatus.FAIL, "Campo referente as Offers se encontra vazio na planilha");
+		}
+
+		fillInput(driver, AssociarPromocaoPageObject.inputNomePlano, nomePlano);
+		click(driver, AssociarPromocaoPageObject.clickButtonFiltrarPlanos);
+		selectElementByIndexListaUfPromocao(driver, AssociarPromocaoPageObject.selectListaPlano,
+				AssociarPromocaoPageObject.clickButtonAddPlano);
+
+		if (!nomeOperacao.equals("null")) {
+			int contador = nomeOperacao.length();
+			int posicaoDinamica = 0;
+			for (int i = 0; i < contador; i++) {
+				if (nomeOperacao.substring(i, i + 1).equals(";")) {
+					int posicao = i;
+					System.out.println(nomeOperacao.substring(posicaoDinamica, posicao));
+					String nomeOperacaoTratado = nomeOperacao.substring(posicaoDinamica, posicao);
+
+					reportHTML.test.log(LogStatus.INFO,
+							"Iniciando a associando o tipo de operacao: " + nomeOperacaoTratado);
+					reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+					fillInput(driver, AssociarPromocaoPageObject.inputNomeOperacao, nomeOperacaoTratado);
+					click(driver, AssociarPromocaoPageObject.clickButtonFiltrarOperacao);
+
+					try {
+						Thread.sleep(3000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					// selectElementVisibleTextS(driver,
+					// AssociarPromocaoPageObject.selectListaOperacao,AssociarPromocaoPageObject.teste
+					// , nomeOperacaoTratado);
+					selectElementVisibleText(driver, AssociarPromocaoPageObject.selectListaOperacao,
+							nomeOperacaoTratado);
+					click(driver, AssociarPromocaoPageObject.clickButtonAddOperacao);
+					reportHTML.test.log(LogStatus.INFO,
+							"Tipo de operacao : " + nomeOperacaoTratado + " associado com sucesso");
+					reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+					posicaoDinamica = posicao + 1;
+				}
+			}
+		} else {
+			reportHTML.test.log(LogStatus.FAIL, "Campo referente ao tipo de operacao se encontra vazio na planilha");
+		}
+
+	}
+
+}

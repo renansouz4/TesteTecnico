@@ -1,0 +1,95 @@
+package Actions;
+
+import org.openqa.selenium.WebDriver;
+
+import com.relevantcodes.extentreports.LogStatus;
+
+import ActionFindElementSelenium.AcoesFindElement;
+import ConstantsSuiteTests.ConstanteUrlBroweser;
+import PageObjects.AssociarComboSVAPageObject;
+import PageObjects.AssociarOfertaDependentePageObject;
+import PageObjects.AssociarPacotePageObject;
+import PageObjects.AssociarPlanoPageObject;
+import PageObjects.AssociarPromocaoPageObject;
+import PageObjects.CriarPacotePageObject;
+import PageObjects.CriarPlanoPageObject;
+import PageObjects.CriarPromocaoPageObject;
+import Report.ExtentReport;
+import Report.Report;
+
+/**
+ * - Class Action
+ * 
+ * @author rodrigo.c.almeida
+ * 
+ */
+public class ComboSVAAction extends AcoesFindElement {
+
+	private WebDriver driver;
+	String URL = ConstanteUrlBroweser.URL_CLARO;
+	private ExtentReport reportHTML;
+	private Report report;
+
+	/**
+	 * - Construtor da Class.
+	 */
+	public ComboSVAAction(WebDriver driver, ExtentReport reportHTML, Report report) {
+		this.driver = driver;
+		this.reportHTML = reportHTML;
+		this.report = report;
+	}
+
+	/**
+	 * - Método responsável por associar o combo SVA .
+	 */
+	public void associarComboSVA(String nomePlano, String selectCombo, String nomeComboSVA) {		
+		click(driver, AssociarComboSVAPageObject.linkComboSVA);
+		click(driver, AssociarComboSVAPageObject.linkAssociarComboSVA);
+		fillInput(driver, AssociarComboSVAPageObject.inputNomePlano, nomePlano);
+		click(driver, AssociarComboSVAPageObject.clickButtonFiltrarPlano);
+		selectElementVisibleText(driver, AssociarComboSVAPageObject.selectCombo, selectCombo);
+
+		if (!nomeComboSVA.equals("null")) {
+			int contador = nomeComboSVA.length();
+			int posicaoDinamica = 0;
+
+			try {
+
+				while (driver.findElements(AssociarComboSVAPageObject.selectListaComboSVAAssociado).size() <= 1) {
+					selectElementByIndexMethod(driver, AssociarComboSVAPageObject.selectListaComboSVAAssociado, (0));
+					click(driver, AssociarComboSVAPageObject.clickButtonDeaddComboSVA);
+				}
+
+			} catch (Exception e) {
+				reportHTML.test.log(LogStatus.INFO, "Realizando desassociação do ComboSVA");
+			}
+			
+			for (int i = 0; i < contador; i++) {
+				if (nomeComboSVA.substring(i, i + 1).equals(";")) {
+					int posicao = i;
+					System.out.println(nomeComboSVA.substring(posicaoDinamica, posicao));
+					String nomeComboSVATratado = nomeComboSVA.substring(posicaoDinamica, posicao);
+					
+					fillInput(driver, AssociarComboSVAPageObject.inputNomePlanoComboSVA, nomeComboSVATratado);
+					click(driver, AssociarComboSVAPageObject.clickButtonFiltrarComboSVA);
+					
+					reportHTML.test.log(LogStatus.INFO,
+							"Iniciando a associando do Combo SVA: " + nomeComboSVATratado);
+					reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+					selectElementVisibleText(driver, AssociarComboSVAPageObject.selectListaComboSVANaoAssociado, nomeComboSVATratado);	
+					click(driver, AssociarComboSVAPageObject.clickButtonAddComboSVA);
+					
+					reportHTML.test.log(LogStatus.PASS,
+							"Combo SVA : " + nomeComboSVATratado + " associada com sucesso");
+					reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+					posicaoDinamica = posicao + 1;
+				}
+			}
+		} else {
+			reportHTML.test.log(LogStatus.INFO, "Campo referente ao Combo SVA se encontra vazio na planilha");
+		}
+		
+	}
+	
+
+}

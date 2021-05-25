@@ -1,0 +1,19 @@
+package PageObjects;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+public class AssociarOfertaDependentePageObject {
+	
+	public static final By linkPlano = By.id("imgsub600");
+	public static final By linkAssociarOfertaDep = By.xpath("//a[@href='/ClaroAdministradorWeb/PlanAssociarOfertasDependente.do']");
+	public static final By inputNomeOferta = By.name("filtroNomeOferta");
+	public static final By clickButtonPesquisarOferta = By.xpath("//*[starts-with(@value, 'Pesquisar Oferta')]");
+	public static final By clickButtonPesquisarPlano = By.xpath("//*[starts-with(@value, 'Pesquisar Plano')]");
+	public static final By selectOferta = By.name("oferta");
+	public static final By selectTipoProduto = By.name("tipoProduto");
+	public static final By inputNomePlano = By.name("filtroNomePlano");
+	public static final By selectPlanosNaoAssociados = By.name("planosDesassociar");
+	public static final By clickButtonAssociarPlano = By.xpath("//*[starts-with(@onclick, 'associarPlanos()')]");
+
+}

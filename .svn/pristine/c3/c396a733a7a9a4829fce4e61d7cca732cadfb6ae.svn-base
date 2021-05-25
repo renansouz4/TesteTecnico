@@ -1,0 +1,8 @@
+[ {
+  "id" : "PL1",
+  "attributes" : {
+    "nome_plano_reservado" : null,
+    "ambiente" : "PLANTA_12",
+    "data_teste" : "25/06/2019 12:31:02"
+  }
+} ]

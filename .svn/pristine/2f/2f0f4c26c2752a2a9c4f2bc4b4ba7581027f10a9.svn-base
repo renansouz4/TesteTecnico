@@ -1,0 +1,17 @@
+package PageObjects;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+public class AssociarComboSVAPageObject {
+	
+	public static final By linkComboSVA = By.id("imgsub950");
+	public static final By linkAssociarComboSVA = By.xpath("//a[@href='ComboSVAAssociarAction.do']");
+	public static final By inputNomePlano = By.name("nomePlanoPesquisa");
+	public static final By clickButtonFiltrarPlano = By.xpath("//*[starts-with(@onclick, 'doFilterPlano()')]");
+	public static final By selectCombo = By.name("planId");
+	public static final By inputNomePlanoComboSVA = By.name("nomeComboSVAPesquisa");
+	public static final By clickButtonFiltrarComboSVA = By.xpath("//*[starts-with(@onclick, 'doFilterComboSVA()')]");
+	public static final By selectListaComboSVANaoAssociado = By.name("listCombosSVANaoAssociadas");
+	public static final By clickButtonAddComboSVA = By.xpath("//*[starts-with(@value, '|>')]");
+}

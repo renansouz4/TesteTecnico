@@ -1,0 +1,57 @@
+package TestCases;
+
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+import ConstantsSuiteTests.ConstantsSpreadsheet;
+import Json.Constants_JSON;
+import Spreadsheet.Spreadsheet;
+import SpreadsheetsSapGui.ObjectPlanListPrice;
+import SpreadsheetsSapGui.SpreadsheetListPrice;
+import util.JSONParserUtil;
+
+public class TestCaseGerarPlanListPrice {
+
+	List products;
+	SpreadsheetListPrice spreadsheetListPrice;
+
+	String SQ_COD;
+	String NOME_PLANO;
+	String TECNOLOGIA;
+	String LP;
+	String TEST_CASE_ID;
+
+	@Before
+	public void setUp() throws Exception {
+
+		products = new ArrayList();
+		spreadsheetListPrice = new SpreadsheetListPrice();
+	}
+
+	@Test
+	public void gerarPlanListPrice() {
+
+		List<String> All_PLANO_ID = Spreadsheet.getStringSpreadsheetPlanosId(ConstantsSpreadsheet.EXCEL_PLANO);
+
+		for (String plano_id : All_PLANO_ID) {
+			if (JSONParserUtil.getAttribute(Constants_JSON.JSON_TEST_RESULT, TEST_CASE_ID)
+					.equalsIgnoreCase("Success!")) {
+				this.SQ_COD = JSONParserUtil.getAttribute(Constants_JSON.JSON_SQ_PLANO, TEST_CASE_ID);
+				this.NOME_PLANO = JSONParserUtil.getAttribute(Constants_JSON.JSON_NOME_PLANO, TEST_CASE_ID);
+				this.TECNOLOGIA = JSONParserUtil.getAttribute(Constants_JSON.JSON_TECNOLOGIA, TEST_CASE_ID);
+				this.LP = "null";
+
+				products.add(new ObjectPlanListPrice(SQ_COD, NOME_PLANO, TECNOLOGIA, LP));
+			}
+		}
+		spreadsheetListPrice.GerarPlanListaPrice(products);
+	}
+
+}

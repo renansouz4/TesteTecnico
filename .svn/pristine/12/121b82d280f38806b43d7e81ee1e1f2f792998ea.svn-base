@@ -1,0 +1,54 @@
+package Actions;
+
+import org.openqa.selenium.WebDriver;
+
+import ActionFindElementSelenium.AcoesFindElement;
+import ConstantsSuiteTests.ConstanteUrlBroweser;
+import PageObjects.AssociarOfertaDependentePageObject;
+import PageObjects.AssociarPromocaoPageObject;
+import PageObjects.CriarPromocaoPageObject;
+import Report.ExtentReport;
+import Report.Report;
+
+/**
+ * - Class Action
+ * 
+ * @author rodrigo.c.almeida
+ * 
+ */
+public class OfertaDependenteAction extends AcoesFindElement {
+
+	private WebDriver driver;
+	String URL = ConstanteUrlBroweser.URL_CLARO;
+	private ExtentReport reportHTML;
+	private Report report;
+
+	/**
+	 * - Construtor da Class.
+	 */
+	public OfertaDependenteAction(WebDriver driver, ExtentReport reportHTML, Report report) {
+		this.driver = driver;
+		this.reportHTML = reportHTML;
+		this.report = report;
+	}
+
+	/**
+	 * - Método responsável por associar a oferta dependente.
+	 */
+	public void associarOfertaDependente(String nomeOferta, String listaOferta, String listaTipoProduto,
+			String nomePlano, String listaPlanosNaoAssociados) {
+
+		click(driver, AssociarOfertaDependentePageObject.linkPlano);
+		click(driver, AssociarOfertaDependentePageObject.linkAssociarOfertaDep);
+		fillInput(driver, AssociarOfertaDependentePageObject.inputNomeOferta, nomeOferta);
+		click(driver, AssociarOfertaDependentePageObject.clickButtonPesquisarOferta);
+		selectElementVisibleText(driver, AssociarOfertaDependentePageObject.selectOferta, listaOferta);
+		selectElementVisibleText(driver, AssociarOfertaDependentePageObject.selectTipoProduto, listaTipoProduto);
+		fillInput(driver, AssociarOfertaDependentePageObject.inputNomePlano, nomePlano);
+		click(driver, AssociarOfertaDependentePageObject.clickButtonAssociarPlano);
+		/// logica do loop
+		selectElementVisibleText(driver, AssociarOfertaDependentePageObject.selectPlanosNaoAssociados,
+				listaPlanosNaoAssociados);
+		click(driver, AssociarOfertaDependentePageObject.clickButtonAssociarPlano);
+	}
+}

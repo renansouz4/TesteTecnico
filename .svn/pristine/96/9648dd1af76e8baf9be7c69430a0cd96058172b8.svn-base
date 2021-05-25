@@ -1,0 +1,239 @@
+package Actions;
+
+import static org.junit.Assert.fail;
+
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+import com.relevantcodes.extentreports.LogStatus;
+
+import ActionFindElementSelenium.AcoesFindElement;
+import ConstantsSuiteTests.ConstanteUrlBroweser;
+import ConstantsSuiteTests.ConstanteV;
+import PageObjects.AlterarPlanoPageObject;
+import PageObjects.AssociarPlanoPageObject;
+import PageObjects.AssociarPromocaoPageObject;
+import PageObjects.CriarPromocaoPageObject;
+import Report.ExtentReport;
+import Report.Report;
+
+/**
+ * - Class Action
+ * 
+ * @author rodrigo.c.almeida
+ * 
+ */
+public class PromocaoAction extends AcoesFindElement {
+
+	private WebDriver driver;
+	String URL = ConstanteUrlBroweser.URL_CLARO;
+	private ExtentReport reportHTML;
+	private Report report;
+
+	/**
+	 * - Construtor da Class.
+	 */
+	public PromocaoAction(WebDriver driver, ExtentReport reportHTML, Report report) {
+		this.driver = driver;
+		this.reportHTML = reportHTML;
+		this.report = report;
+	}
+
+	/**
+	 * - Método responsável por criar a promocao.
+	 */
+	public void criarPromocao(String nomePromocao,
+			                  String descPromocao, 
+			                  String dataInicio, 
+			                  String dataFim,
+			                  String ValueTripleA, 
+			                  String tipoPromocao, 
+			                  String aquisicaoAparelho, 
+			                  String selectTipoPromocao,
+			                  String listaCanal, 
+			                  String perfilPromocao, 
+			                  String tipoCenarioPromo, 
+			                  String subTipoCliente, 
+			                  String estados) {
+		
+		switch (selectTipoPromocao) {
+		case "Aquisição":
+			selectTipoPromocao = "Promoção Aquisição (AQUISICAO)";
+			break;
+		case "Upgrade de Aparelho":
+			selectTipoPromocao = "Promoção Upgrade de Aparelho (UPGRADE_APARELHO)";
+			break;
+		case "Trade-In":
+			selectTipoPromocao = "Promoção Trade-In (TRADE_IN)";
+			break;
+		case "Dependente (BL)":
+			selectTipoPromocao = "Promoção Dependente (DEPENDENTE)";
+			break;
+
+		default:
+			System.out.println(selectTipoPromocao);
+			System.out.println("Tipo de promocao nao é válido!");
+
+		}
+
+		click(driver, CriarPromocaoPageObject.linkPromocao);
+		click(driver, CriarPromocaoPageObject.linkCriarPromocao);
+		fillInput(driver, CriarPromocaoPageObject.inputNomePromocao, nomePromocao);
+		fillInput(driver, CriarPromocaoPageObject.inputDescPromocao, descPromocao);
+		fillInput(driver, CriarPromocaoPageObject.inputDataInicio, dataInicio);
+		fillInput(driver, CriarPromocaoPageObject.inputDataFim, dataFim);
+		clickCheckbox(driver, CriarPromocaoPageObject.checkedTripleA, ValueTripleA);
+		clickCheckbox(driver, CriarPromocaoPageObject.checkedTipoPromo, tipoPromocao);
+		clickCheckbox(driver, CriarPromocaoPageObject.checkedAquisicaoAparelho, aquisicaoAparelho);
+		selectElementVisibleText(driver, CriarPromocaoPageObject.selectTipoPromocao, selectTipoPromocao);
+		clickCheckboxTableCanalPromocao(driver, listaCanal);
+		clickCheckboxTablePerfilPromocao(driver, perfilPromocao);
+		clickCheckboxTableTipoCenarioPromo(driver, tipoCenarioPromo);
+		clickCheckboxTableSubTipos(driver, subTipoCliente);
+		clickCheckboxTableEstadosPromocao(driver);		
+		try {
+			expandirDDD(driver,estados);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		isSelectedTrueUFDDD(driver,estados);
+		
+		click(driver, CriarPromocaoPageObject.clickButtonCriar);
+		Alert alert_box = driver.switchTo().alert();
+		alert_box.accept();
+
+		System.out.println(getText(driver, CriarPromocaoPageObject.getTextMensagemFinal));
+
+		if (getText(driver, CriarPromocaoPageObject.getTextMensagemFinal).contains("sucesso")) {
+			reportHTML.test.log(LogStatus.PASS, "Promocao criada com sucesso");
+			reportHTML.test.log(LogStatus.PASS, reportHTML.test.addScreenCapture(report.capturar()));
+		} else {
+			reportHTML.test.log(LogStatus.FAIL, "Erro na criacao da promocao");
+			reportHTML.test.log(LogStatus.FAIL, reportHTML.test.addScreenCapture(report.capturar()));
+			fail("Erro na criacao da promocao");
+		}
+
+	}
+
+	/**
+	 * - Método responsável por associar a promocao.
+	 */
+	public void associarPromocao(String tipoPromocao, String vigenciaPromocao, String nomePromocao, String nomeOffer,
+			String nomePlano, String nomeOperacao) {
+		click(driver, CriarPromocaoPageObject.linkPromocao);
+		click(driver, AssociarPromocaoPageObject.linkAssociarPromocao);
+		clickCheckbox(driver, AssociarPromocaoPageObject.checkedTipoPromocao, tipoPromocao);
+		clickCheckbox(driver, AssociarPromocaoPageObject.checkedVigenciaPromocao, vigenciaPromocao);
+		fillInput(driver, AssociarPromocaoPageObject.inputNomePromocao, nomePromocao);
+		click(driver, AssociarPromocaoPageObject.clickButtonPesquisa);
+		selectElementByIndexMethod(driver, AssociarPromocaoPageObject.selectListaPromocao, 1);
+
+		/**
+		 * - Verificar se o campo offer esta null, se nao estiver... verificar cada
+		 * string que esta sendo separada por ";"
+		 */
+		if (!nomeOffer.equals("null")) {
+			int contador = nomeOffer.length();
+			int posicaoDinamica = 0;
+			for (int i = 0; i < contador; i++) {
+				if (nomeOffer.substring(i, i + 1).equals(";")) {
+					int posicao = i;
+					System.out.println(nomeOffer.substring(posicaoDinamica, posicao));
+					String nomeOfferTratado = nomeOffer.substring(posicaoDinamica, posicao);
+
+					fillInput(driver, AssociarPromocaoPageObject.inputNomeoffer, nomeOfferTratado);
+					click(driver, AssociarPromocaoPageObject.clickButtonFiltrarOffers);
+
+					reportHTML.test.log(LogStatus.INFO, "Iniciando a associando a Offer: " + nomeOfferTratado);
+					reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+
+					try {
+						selectElementVisibleTextS(driver, AssociarPromocaoPageObject.selectListaOffers,
+								AssociarPromocaoPageObject.teste, nomeOfferTratado);
+						reportHTML.test.log(LogStatus.PASS,
+								"Offer Nativa: " + nomeOfferTratado + " associada com sucesso");
+						reportHTML.test.log(LogStatus.PASS, reportHTML.test.addScreenCapture(report.capturar()));
+						click(driver, AssociarPromocaoPageObject.clickButtonAddOffers);
+					} catch (Exception e) {
+						reportHTML.test.log(LogStatus.WARNING, "Offer: " + nomeOfferTratado + ", nao encontrada");
+						reportHTML.test.log(LogStatus.WARNING, reportHTML.test.addScreenCapture(report.capturar()));
+					}
+
+					posicaoDinamica = posicao + 1;
+				}
+			}
+		} else {
+			reportHTML.test.log(LogStatus.WARNING, "Campo referente as Offers se encontra vazio na planilha");
+		}
+		
+		/**
+		 * - Verificar se o campo plano esta null, se nao estiver... verificar cada
+		 * string que esta sendo separada por ";"
+		 */
+		if (!nomePlano.equals("null")) {
+			int contador = nomePlano.length();
+			int posicaoDinamica = 0;
+			for (int i = 0; i < contador; i++) {
+				if (nomePlano.substring(i, i + 1).equals(";")) {
+					int posicao = i;
+					String nomePlanoTratado = nomePlano.substring(posicaoDinamica, posicao);
+					fillInput(driver, AssociarPromocaoPageObject.inputNomePlano, nomePlanoTratado);
+					click(driver, AssociarPromocaoPageObject.clickButtonFiltrarPlanos);
+
+					try {
+						selectElementByIndexListaUfPromocao(driver, AssociarPromocaoPageObject.selectListaPlano,
+								AssociarPromocaoPageObject.clickButtonAddPlano, reportHTML);
+						reportHTML.test.log(LogStatus.PASS, "Plano: " + nomePlanoTratado + " associada com sucesso");
+						reportHTML.test.log(LogStatus.PASS, reportHTML.test.addScreenCapture(report.capturar()));
+					} catch (Exception e) {
+						reportHTML.test.log(LogStatus.WARNING, "Plano " + nomePlanoTratado + " nao encontrada");
+						reportHTML.test.log(LogStatus.WARNING, reportHTML.test.addScreenCapture(report.capturar()));
+					}
+
+					posicaoDinamica = posicao + 1;
+
+				}
+			}
+		}
+		/**
+		 * - Verificar se o campo operacao esta null, se nao estiver... verificar cada
+		 * string que esta sendo separada por ";"
+		 */
+		if (!nomeOperacao.equals("null")) {
+			int contador = nomeOperacao.length();
+			int posicaoDinamica = 0;
+			for (int i = 0; i < contador; i++) {
+				if (nomeOperacao.substring(i, i + 1).equals(";")) {
+					int posicao = i;
+					System.out.println(nomeOperacao.substring(posicaoDinamica, posicao));
+					String nomeOperacaoTratado = nomeOperacao.substring(posicaoDinamica, posicao);
+
+					reportHTML.test.log(LogStatus.INFO,
+							"Iniciando a associando o tipo de operacao: " + nomeOperacaoTratado);
+					reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+					fillInput(driver, AssociarPromocaoPageObject.inputNomeOperacao, nomeOperacaoTratado);
+					click(driver, AssociarPromocaoPageObject.clickButtonFiltrarOperacao);
+
+					try {
+						selectElementVisibleText(driver, AssociarPromocaoPageObject.selectListaOperacao,
+								nomeOperacaoTratado);
+						click(driver, AssociarPromocaoPageObject.clickButtonAddOperacao);
+						reportHTML.test.log(LogStatus.PASS,
+								"Tipo de operacao : " + nomeOperacaoTratado + " associado com sucesso");
+						reportHTML.test.log(LogStatus.PASS, reportHTML.test.addScreenCapture(report.capturar()));
+					} catch (Exception e) {
+						reportHTML.test.log(LogStatus.WARNING, "Operacao: " + nomeOperacaoTratado + " nao encontrada");
+						reportHTML.test.log(LogStatus.WARNING, reportHTML.test.addScreenCapture(report.capturar()));
+					}
+					posicaoDinamica = posicao + 1;
+				}
+			}
+		} else {
+			reportHTML.test.log(LogStatus.WARNING, "Campo referente ao tipo de operacao se encontra vazio na planilha");
+		}
+
+	}
+
+}

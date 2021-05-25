@@ -1,0 +1,30 @@
+package PageObjects;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+public class AssociarPlanoPageObject {
+	
+	public static final By linkPlano = By.id("imgsub600");
+	public static final By linkAssociarPlano = By.xpath("//a[@href='/ClaroAdministradorWeb/PlanAssociarPlano.do']");
+	public static final By selectEstado = By.name("estado");
+	public static final By inputNomePlano = By.name("nomePlano");
+	public static final By buttonPesquisar = By.xpath("//*[starts-with(@value, 'Pesquisar')]");
+	public static final By selectPlano = By.name("tipoPlano");
+	public static final By inputNomeOffer = By.name("offerNameFilter");
+	public static final By buttonFiltrar = By.xpath("//*[starts-with(@value, 'Filtrar')]");
+	public static final By selectOfferObrigatoria = By.name("listMandatoryOffers");
+	public static final By buttonAssociarOfferObr = By.xpath("//*[starts-with(@onclick, 'direitaMandatory()')]");
+	public static final By selectOfferNativa = By.name("listNativeOffers");
+	public static final By buttonAssociarOfferNtv = By.xpath("//*[starts-with(@onclick, 'direitaNative()')]");
+	public static final By selectPromoAdicional = By.name("listAdditionalOffers");
+	public static final By buttonAssociarPromoAdc = By.xpath("//*[starts-with(@onclick, 'direitaAdditional()')]");
+	
+	public static final By selectOfferObrigatoriaAssociada = By.name("listAssociatedMandatoryOffers");
+	public static final By buttonDesasociarPromoAdc = By.xpath("//*[starts-with(@onclick, 'esquerdaMandatory()')]");
+	
+	public static final By selectOfferNativaAssociada = By.name("listAssociatedNativeOffers");
+	public static final By buttonDesasociarNativaPromoAdc = By.xpath("//*[starts-with(@onclick, 'esquerdaNative()')]");
+	
+	
+}

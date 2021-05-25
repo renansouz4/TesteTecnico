@@ -1,0 +1,62 @@
+package PageObjects;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+public class CriarPromocaoPageObject {
+
+	public static final By linkPromocao = By.id("imgsub700");
+	public static final By linkCriarPromocao = By.xpath("//a[@href='/ClaroAdministradorWeb/PromoCriarPromocao.do']");
+
+	public static final By inputNomePromocao = By.name("nomePromocao");
+	public static final By inputDescPromocao = By.name("descPromocao");
+
+	public static final By inputDataInicio = By.name("dataInicioPromocao");
+	public static final By inputDataFim = By.name("dataFimPromocao");
+
+	public static final By checkedTripleA = By.name("tripleA");
+	public static final By checkedTipoPromo = By.name("tipo");
+	public static final By checkedAquisicaoAparelho = By.name("aquisicaoAparelho");
+	public static final By selectTipoPromocao = By.name("tipoDePromocaoPromocao");
+	public static final By checkedCanalPromocao = By.name("canalPromocao");
+	public static final By checkedperfilPromo = By.name("perfil");
+	public static final By checkedTipoCenario = By.name("tipoCenario");
+	public static final By selectTaxaCobranca = By.name("cobrancaTaxa");
+	public static final By inputValorCobrancaTaxa = By.name("valorCobrancaTaxa");
+	public static final By inputTempoBase = By.name("tempoBase");
+	public static final By inputDuracaoPromo = By.name("duracaoTotalPromocao");
+	public static final By inputCodigoUra = By.name("codigoUra");
+	public static final By inputCodigoPromoNGP = By.name("cdPromocaoNgp");
+	public static final By checkedSubTipoCliente = By.name("subTipoClienteList[]");
+	public static final By selectPromoPadrao = By.name("promocaoPadrao");
+	public static final By checkedEstados = By.id("estados");
+	public static final By clickButtonCriar = By.xpath("//*[starts-with(@value, 'Criar')]");
+
+	public static final By getTextMensagemFinal = By
+			.xpath("/HTML/BODY/CENTER/TABLE/TBODY/TR[2]/TD[2]/FORM/TABLE[2]/TBODY/TR/TD/SPAN");
+
+	public static By desmarcarDddUf(int uf) {
+		return By.xpath("//*[starts-with(@onclick, 'checkEstadoJS(this, " + uf + ");')]");
+	}
+
+	public static By desmarcarDdd(int value) {
+		return By.xpath("//*[starts-with(@value, '" + value + "')]");
+	}
+
+	public static By abreAbasColuna1(int i) {
+		return By.xpath("//*[@id=\"estados\"]/span[" + i + "]/a");
+	}
+
+	public static By abreAbasColuna2(int i) {
+		return By.xpath(
+				"/html/body/center/table/tbody/tr[2]/td[2]/form/table[3]/tbody/tr[28]/td/table/tbody/tr[3]/td/div[2]/span["
+						+ i + "]/a");
+	}
+
+	public static By abreAbasColuna3(int i) {
+		return By.xpath(
+				"/html/body/center/table/tbody/tr[2]/td[2]/form/table[3]/tbody/tr[28]/td/table/tbody/tr[3]/td/div[3]/span["
+						+ i + "]/a");
+
+	}
+}

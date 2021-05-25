@@ -1,0 +1,54 @@
+package Actions;
+
+import org.openqa.selenium.WebDriver;
+
+import ActionFindElementSelenium.AcoesFindElement;
+import ConstantsSuiteTests.ConstanteUrlBroweser;
+import PageObjects.AssociarComboSVAPageObject;
+import PageObjects.AssociarOfertaDependentePageObject;
+import PageObjects.AssociarPacotePageObject;
+import PageObjects.AssociarPromocaoPageObject;
+import PageObjects.CriarPacotePageObject;
+import PageObjects.CriarPlanoPageObject;
+import PageObjects.CriarPromocaoPageObject;
+import Report.ExtentReport;
+import Report.Report;
+
+/**
+ * - Class Action
+ * 
+ * @author rodrigo.c.almeida
+ * 
+ */
+public class ComboSVAAction extends AcoesFindElement {
+
+	private WebDriver driver;
+	String URL = ConstanteUrlBroweser.URL_CLARO;
+	private ExtentReport reportHTML;
+	private Report report;
+
+	/**
+	 * - Construtor da Class.
+	 */
+	public ComboSVAAction(WebDriver driver, ExtentReport reportHTML, Report report) {
+		this.driver = driver;
+		this.reportHTML = reportHTML;
+		this.report = report;
+	}
+
+	/**
+	 * - Método responsável por associar o combo SVA .
+	 */
+	public void associarComboSVA(String nomePlano, String selectCombo, String nomeComboSVA, String selectComboNAssociado) {		
+		click(driver, AssociarComboSVAPageObject.linkComboSVA);
+		click(driver, AssociarComboSVAPageObject.linkAssociarComboSVA);
+		fillInput(driver, AssociarComboSVAPageObject.inputNomePlano, nomePlano);
+		click(driver, AssociarComboSVAPageObject.clickButtonFiltrarPlano);
+		selectElementVisibleText(driver, AssociarComboSVAPageObject.selectCombo, selectCombo);
+		fillInput(driver, AssociarComboSVAPageObject.inputNomePlanoComboSVA, nomeComboSVA);
+		click(driver, AssociarComboSVAPageObject.clickButtonFiltrarComboSVA);
+		selectElementVisibleText(driver, AssociarComboSVAPageObject.selectListaComboSVANaoAssociado, selectComboNAssociado);	
+	}
+	
+
+}

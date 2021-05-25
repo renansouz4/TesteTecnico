@@ -1,0 +1,17 @@
+package PageObjects;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+public class CriarPlanoPageObject {
+	
+	public static final By linkPlano = By.id("imgsub600");
+	public static final By linkCriarPlano = By.xpath("//a[@href='/ClaroAdministradorWeb/PlanCriarPlano.do']");
+	public static final By inputNomePlano = By.name("nomePlano");
+	public static final By inputDescricaoPlano = By.name("descricaoResumida");
+	public static final By buttonCriarPlano = By.xpath("/HTML/BODY/CENTER/TABLE/TBODY/TR[2]/TD[2]/FORM/TABLE[3]/TBODY/TR[33]/TD/INPUT");
+	public static final By linkMarcaTodosCanais = By.xpath("//*[starts-with(@grupo, 'tbCanal')]");
+	public static final By linkMarcaTodosEstados = By.xpath("//*[starts-with(@grupo, 'tbEstado')]");
+	public static final By getTextMensagemCriacaoSucesso = By.xpath("/HTML/BODY/CENTER/TABLE/TBODY/TR[2]/TD[2]/FORM/TABLE[2]/TBODY/TR/TD/SPAN");
+	public static final By getTextTESTE= By.xpath("//TABLE[@id='tbCanal']/TBODY/TR[3]/TD[1]");
+}

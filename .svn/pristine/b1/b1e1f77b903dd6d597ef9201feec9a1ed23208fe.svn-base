@@ -1,0 +1,63 @@
+package Actions;
+
+import org.openqa.selenium.WebDriver;
+
+import ActionFindElementSelenium.AcoesFindElement;
+import ConstantsSuiteTests.ConstanteUrlBroweser;
+import PageObjects.AssociarOfertaDependentePageObject;
+import PageObjects.AssociarPacotePageObject;
+import PageObjects.AssociarPromocaoPageObject;
+import PageObjects.CriarPacotePageObject;
+import PageObjects.CriarPlanoPageObject;
+import PageObjects.CriarPromocaoPageObject;
+import Report.ExtentReport;
+import Report.Report;
+
+/**
+ * - Class Action
+ * 
+ * @author rodrigo.c.almeida
+ * 
+ */
+public class PacoteAction extends AcoesFindElement {
+
+	private WebDriver driver;
+	String URL = ConstanteUrlBroweser.URL_CLARO;
+	private ExtentReport reportHTML;
+	private Report report;
+
+	/**
+	 * - Construtor da Class.
+	 */
+	public PacoteAction(WebDriver driver, ExtentReport reportHTML, Report report) {
+		this.driver = driver;
+		this.reportHTML = reportHTML;
+		this.report = report;
+	}
+
+	/**
+	 * - Método responsável por criar o pacote do tipo passaporte .
+	 */
+	public void criarPacotePassaporte(String nomeOffer, String dtInicio, String dtFim, String listaPacote) {		
+		click(driver, CriarPacotePageObject.linkGrupoOffers);
+		click(driver, CriarPacotePageObject.linkCriarPacote);
+		fillInput(driver, CriarPacotePageObject.inputNameOfferGrup, nomeOffer);
+		fillInput(driver, CriarPacotePageObject.inputDtInicio, dtInicio);
+		fillInput(driver, CriarPacotePageObject.inputDtFim, dtFim);
+		selectElementVisibleText(driver, CriarPacotePageObject.selectListaPacote, listaPacote);
+		click(driver, CriarPacotePageObject.clickButtonCriar);
+	}
+	
+	/**
+	 * - Método responsável por associar o pacote do tipo passaporte .
+	 */
+	public void associarPacotePassaporte(String nomeGrupoOffer, String listaGrupoOffer) {		
+		click(driver, AssociarPacotePageObject.linkGrupoOffers);
+		click(driver, AssociarPacotePageObject.linkAssociarPacote);
+		fillInput(driver, AssociarPacotePageObject.inputNomeGrupoOffer, nomeGrupoOffer);
+		click(driver, AssociarPacotePageObject.clickButtonPesquisar);
+		selectElementVisibleText(driver, AssociarPacotePageObject.selectListaGrupoOffer, listaGrupoOffer);
+		click(driver, AssociarPacotePageObject.clickButtonAddOffer);
+		
+	}
+}

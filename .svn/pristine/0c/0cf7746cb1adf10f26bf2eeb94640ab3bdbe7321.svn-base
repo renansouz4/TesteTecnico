@@ -1,0 +1,32 @@
+package PageObjects;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+public class AlterarPlanoPageObject {
+	
+	public static final By linkPlano = By.id("imgsub600");
+	public static final By linkAlterarPlano = By.xpath("//a[@href='/ClaroAdministradorWeb/PlanAlterarPlano.do']");
+	public static final By selectEstado = By.name("estado");
+	public static final By inputNomePlanoNovo = By.name("novoNomePlano");
+	public static final By selectTiposPlano = By.name("tipoPlanos");
+	public static final By inputDescricaoPlanoNovo = By.name("descricaoResumida");
+	public static final By inputDescricaoPrecarioPlanoNovo = By.name("descricaoPrecario");
+	public static final By inputDescricaoAbreviadaPlanoNovo = By.name("descricaoAbreviada");	
+	public static final By selectPlanoAtivo = By.name("fgAtivo");
+	public static final By selectTipoTecnologia = By.name("tipoTecnologia");
+	public static final By checkedValidarCobertura = By.name("validarCobertura");
+	public static final By checkedTripleA = By.name("tripleA");
+	public static final By selectTipoPlano = By.name("tipoPlano");
+	public static final By checkedPermiteDependenteBL = By.name("permiteDependenteBL");
+	public static final By checkedObrigatorioDependente= By.name("obrigatorioDependente");
+	public static final By checkedPermiteDependenteControle = By.name("permiteDependenteControle");
+	public static final By checkedApresentarPlanoOMS = By.name("plano4P");
+	
+	public static final By clickSalva= By.xpath("/HTML/BODY/CENTER/TABLE/TBODY/TR[2]/TD[2]/FORM/TABLE[3]/TBODY/TR[7]/TD/TABLE/TBODY/TR[36]/TD/INPUT");
+	public static final By checkPlanoSuperControle= By.name("planoSuperControle");
+	
+	
+
+
+}

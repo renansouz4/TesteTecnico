@@ -1,0 +1,17 @@
+package ConstantsSuiteTests;
+
+public class ConstanteV {
+
+	public static final String ATIVAR = "1";
+	public static final String DESATIVAR = "0";
+
+	public static final String MSG_PLANO_RESERVADO_CRIADO_SUCESSO = "Plano Incluído com sucesso.";
+	public static final String MSG_PLANO_RESERVADO_ATIVADO_SUCESSO = "Plano Salvo com sucesso.";
+	public static final String MSG_PLANO_RESERVADO_ALTERADO_SUCESSO = "Plano Alterado com sucesso.";
+
+	public static final String[] RG_ALL = new String[] { "AL", "CE", "DF", "ES", "GO", "MS", "MT", "PB", "PE", "PI", "RJ",
+			"RN", "RS", "RO", "SP", "TO", "BA", "AC", "PR", "SC", "SE", "RR", "AM", "MA", "AP", "PA", "MG" };
+
+	public static final String[] COD_RG_ALL = new String[] { "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
+			"14", "15", "16", "17", "18", "1", "19", "20", "21", "23", "24", "25", "26", "27", "22" };
+}

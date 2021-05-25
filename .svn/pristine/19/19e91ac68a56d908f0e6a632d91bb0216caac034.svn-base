@@ -1,0 +1,1359 @@
+package ActionFindElementSelenium;
+
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+
+import org.junit.Assert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.pagefactory.ByChained;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.relevantcodes.extentreports.LogStatus;
+
+import ConstantsSuiteTests.ConstDddUf;
+import PageObjects.AssociarPromocaoPageObject;
+import PageObjects.CriarPlanoPageObject;
+import PageObjects.CriarPromocaoPageObject;
+import Report.ExtentReport;
+
+public class AcoesFindElement {
+
+	/**
+	 * Método responsável para a abertura de uma URL. Utiliza a url para abrir uma
+	 * página web.
+	 */
+	
+	
+	public static void openURL(WebDriver driver, String url) {
+		driver.get(url);
+		driver.manage().window().maximize();
+	}
+
+	/**
+	 * Recuperar o text da tela.
+	 * 
+	 * @return
+	 */
+	public static String getText(WebDriver driver, By by) {
+		WebElement element = null;
+		element = findElement(driver, by);
+		String elementText = element.getText();
+
+		return elementText;
+	}
+
+	public static String getValue(WebDriver driver, By by) {
+		WebElement element = null;
+		element = findElement(driver, by);
+		String elementText = element.getAttribute("value");
+
+		return elementText;
+	}
+
+	public String getTextStatusQualificado(WebDriver driver, By by) throws InterruptedException {
+
+		for (int i = 0; i <= 70; i++) {
+			try {
+				WebElement element = null;
+				element = findElement(driver, by);
+				String elementText = element.getText();
+
+				System.out.println(elementText);
+
+				if (elementText.equals("Qualificado")) {
+					return elementText;
+				}
+			} catch (Exception e) {
+				// e.printStackTrace();
+
+				System.out.println(e.getMessage());
+			}
+
+			Thread.sleep(1000);
+
+		}
+
+		return "ERRO";
+	}
+
+	public String getTextStatusAprovado(WebDriver driver, By by) throws InterruptedException {
+
+		for (int i = 0; i <= 30; i++) {
+
+			WebElement element = null;
+			element = findElement(driver, by);
+			String elementText = element.getText();
+
+			System.out.println(elementText);
+
+			if (elementText.equals("Aprovado")) {
+				return elementText;
+			}
+			Thread.sleep(1000);
+		}
+
+		return "ERRO";
+	}
+
+	public void tirarPrintEndereco(WebDriver driver, By by) throws InterruptedException {
+		WebElement element = null;
+		element = findElement(driver, by);
+
+		element.sendKeys(Keys.ARROW_UP);
+		element.sendKeys(Keys.ARROW_UP);
+		element.sendKeys(Keys.ARROW_UP);
+		Thread.sleep(1000);
+	}
+
+	public void subirBarra(WebDriver driver, By by) throws InterruptedException {
+		WebElement element = null;
+		element = findElement(driver, by);
+
+		element.sendKeys(Keys.ARROW_DOWN);
+		element.sendKeys(Keys.ARROW_DOWN);
+		Thread.sleep(1000);
+	}
+
+	/**
+	 * Método responsável pelo preenchimento de campos do tipo INPUT. Utiliza o By
+	 * para localizar o componente.
+	 * 
+	 * @return Retorna o componente alterado.
+	 */
+	public WebElement fillInput(WebDriver driver, By by, String valor) {
+
+		int timeout = 2;
+		while (!(timeout <= 0)) {
+			timeout--;
+			try {
+
+				WebDriverWait wait = new WebDriverWait(driver, 30);
+
+				wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
+
+				WebElement element = findElement(driver, by);
+				element.click();
+				element.clear();
+				element.sendKeys(valor.trim());
+				return element;
+
+			} catch (Exception e) {
+				System.out.println("Erro na acao de input do framework");
+			}
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		return null;
+	}
+
+	public WebElement fillInputClear(WebDriver driver, By by, String valor) {
+
+		WebDriverWait wait = new WebDriverWait(driver, 30);
+
+		wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
+
+		WebElement element = findElement(driver, by);
+		element.click();
+		element.clear();
+		element.sendKeys(valor);
+		return element;
+
+	}
+
+	public WebElement fillInputSOClear(WebDriver driver, By by) {
+
+		WebDriverWait wait = new WebDriverWait(driver, 30);
+
+		wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
+
+		WebElement element = findElement(driver, by);
+		// element.click();
+		element.clear();
+		return element;
+
+	}
+
+	/**
+	 * Método responsável pelo preenchimento de campos do tipo SELECT. Utiliza o By
+	 * para localizar o componente.
+	 * 
+	 * @return
+	 */
+	public WebElement fillInputSelect(WebDriver driver, By by, String opcao) {
+		int timeout = 25;
+		while (!(timeout <= 0)) {
+			timeout--;
+			try {
+				WebElement element = null;
+				Select select = null;
+				element = findElement(driver, by);
+				select = new Select(element);
+				select.selectByVisibleText(opcao);
+				return element;
+
+			} catch (Exception e) {
+				System.out.println(e.getCause());
+			}
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Método responsável pela execução do clique no componente. Utiliza o By
+	 * informado para localizar o componente.
+	 * 
+	 * @return Retorna o componente clicado.
+	 * @throws InterruptedException
+	 */
+	public static void click(WebDriver driver, By by) {
+
+		int timeout = 100;
+		while (!(timeout <= 0)) {
+			timeout--;
+			try {
+				WebElement element = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(by));
+				Actions actions = new Actions(driver);
+				WebElement mainMenu = element;
+				actions.moveToElement(mainMenu).build().perform();
+				element.click();
+				return;
+			} catch (Exception e) {
+				System.err.println("Erro na acao de click");
+				driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+			}
+
+		}
+
+		Assert.fail("Erro na acao de click do framework");
+		;
+
+	}
+
+	public static void clickConc(WebDriver driver, By by, By by2) {
+
+		int timeout = 5;
+		while (!(timeout <= 0)) {
+			timeout--;
+			try {
+				WebElement element = driver.findElement(new ByChained(by, by2));
+				Actions actions = new Actions(driver);
+				WebElement mainMenu = element;
+				actions.moveToElement(mainMenu).build().perform();
+				element.click();
+				return;
+			} catch (Exception e) {
+				System.err.println("Erro na acao de click");
+				driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+			}
+
+		}
+
+		Assert.fail("Erro na acao de click do framework" + by + " -- " + by2);
+		;
+
+	}
+
+	public static WebElement mover(WebDriver driver, By by) {
+
+		int timeout = 150;
+		while (!(timeout <= 0)) {
+			timeout--;
+			try {
+				WebElement element = (new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(by));
+				Thread.sleep(50);
+				Actions actions = new Actions(driver);
+				WebElement mainMenu = element;
+				actions.moveToElement(mainMenu).build().perform();
+				return element;
+			} catch (Exception e) {
+				System.out.println("Erro na acao e click do framework");
+			}
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		return null;
+
+	}
+
+	/**
+	 * Método responsável pela localização do componente. Utiliza o By informado
+	 * para localizar o componente. Capaz de ignorar erros do tipo
+	 * NoSuchElementException e StaleElementReferenceException
+	 * 
+	 * @return O Elemento buscado
+	 */
+	public static WebElement findElement(WebDriver driver, final By by) {
+
+		int i = 1;
+		int Constantes_MAX_SEGUNDOS = 5;
+		WebElement element = null;
+		Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(5, TimeUnit.SECONDS)/*
+																									 * Esperando 25
+																									 * segundos para que
+																									 * o elemento esteja
+																									 * presente na
+																									 * página
+																									 */
+				.pollingEvery(1, TimeUnit.SECONDS)/* Verificando por sua presença uma vez a cada 1 segundos */
+				.ignoring(NoSuchElementException.class).ignoring(StaleElementReferenceException.class)
+				.ignoring(TimeoutException.class);
+		try {
+			while (element == null && i < Constantes_MAX_SEGUNDOS) {
+				try {
+					if (null != ExpectedConditions.visibilityOfElementLocated(by)) {
+						element = wait.until(new Function<WebDriver, WebElement>() {
+							public WebElement apply(WebDriver driver) {
+								return driver.findElement(by);
+							}
+						});
+						if (element.getText().equals("Nenhum registro encontrado")) {
+							element = null;
+						}
+					}
+				} catch (Exception ex) {
+					System.out.println(ex.getMessage());
+					i++;
+					element = null;
+					continue;
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Assert.assertNotNull("Elemento não foi encontrado", ex);
+		}
+		return element;
+	}
+
+	/**
+	 * Método responsável por copiar para área de transaferência
+	 * 
+	 * @param texto a ser copiado
+	 **/
+	public static void copiaParaClipBoard(String text) {
+		StringSelection ss = new StringSelection(text);
+		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
+	}
+
+	public boolean selectDropdown(WebDriver driver, By xpath, String opcaoSelecionada) throws InterruptedException {
+		click(driver, xpath);
+		String opcao = xpath.toString();
+		opcao.replaceAll("div[2]/span", "div[3]/div/ul/li");
+		opcao.replaceAll("xpath", "");
+		String descItem;
+		int quantidadeDeItens = driver
+				.findElements(By.xpath("//p-dropdown[@id='drpDwnProcessTypes']/div/div[3]/div/ul/li")).size();
+		for (int item = 1; item <= quantidadeDeItens; item++) {
+			descItem = findElement(driver, By.xpath(opcao + "[" + item + "]/span")).getText();
+			if (opcaoSelecionada.toUpperCase().trim().equals(descItem.toUpperCase())) {
+				// Assert.assertTrue(true);
+				click(driver,
+						By.xpath("//p-dropdown[@id='drpDwnProcessTypes']/div/div[3]/div/ul/li[" + item + "]/span"));
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean contemStatus(String elemento, String status) {
+		return elemento.contains(status);
+	}
+
+	public void waitForLoad(final WebDriver driver) {
+		final WebElement loading = findElement(driver, By.id("loading-login"));
+		while (loading.getAttribute("ng-reflect-show") == "true") {
+			// timeout(1);
+		}
+	}
+
+	public void waitForPageLoad(WebDriver driver) {
+		WebDriverWait wait = new WebDriverWait(driver, 60);
+		try {
+			WebElement loading = findElement(driver, By.className("backdrop"));
+			if (loading != null) {
+				// setLoading(true);
+			}
+			wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("backdrop")));
+		} catch (TimeoutException ex) {
+			Assert.assertTrue("O load excedeu o tempo limite", null == ex);
+		}
+	}
+
+	// Verifica se tem um alert na tela a cada 3 segundos durante 10 tentativas
+	public boolean isAlertPresent(WebDriver driver, By by) {
+		boolean result = false;
+		for (int i = 1; i <= 10; i++) {
+			try {
+				WebElement dialog = findElement(driver, by);
+				result = dialog.isDisplayed();
+				if (result == true) {
+					break;
+				} else {
+					// timeout(3);
+					System.out.println("Nennhum alert encontrado - " + result + i);
+				}
+			} catch (final Exception e) {
+			}
+		}
+		return result;
+	}
+
+	// Verifica se tem um modal na tela a cada 3 segundos durante 10 tentativas
+	public boolean isModalPresent(WebDriver driver, By by) {
+		boolean result = false;
+		for (int i = 1; i <= 10; i++) {
+			try {
+				final WebElement dialog = findElement(driver, by);
+				result = dialog.isDisplayed();
+				if (result == true) {
+					break;
+				} else {
+					// timeout(3);
+					System.out.println("Nennhum modal encontrado - " + result + i);
+				}
+			} catch (final Exception e) {
+			}
+		}
+		return result;
+	}
+
+	public static void radiobutton_Select(WebElement Radio) {
+		boolean checkstatus;
+		checkstatus = Radio.isSelected();
+		if (checkstatus == true) {
+			System.out.println("RadioButton is already checked");
+		} else {
+			Radio.click();
+			System.out.println("Selected the Radiobutton");
+		}
+	}
+
+	public static void checkbox_Unchecking(WebElement checkbox) {
+		boolean checkstatus;
+		checkstatus = checkbox.isSelected();
+		if (checkstatus == true) {
+			checkbox.click();
+			System.out.println("Checkbox is unchecked");
+		} else {
+			System.out.println("Checkbox is already unchecked");
+		}
+	}
+
+	public static void radioButton_Deselect(WebElement Radio) {
+		boolean checkstatus;
+		checkstatus = Radio.isSelected();
+		if (checkstatus == true) {
+			Radio.click();
+			System.out.println("Radio Button is deselected");
+		} else {
+			System.out.println("Radio Button was already Deselected");
+		}
+	}
+
+	public static void dragAndDrop(WebDriver driver, WebElement fromWebElement, WebElement toWebElement) {
+		Actions builder = new Actions(driver);
+		builder.dragAndDrop(fromWebElement, toWebElement);
+	}
+
+	public static void dragAndDrop_Method2(WebDriver driver, WebElement fromWebElement, WebElement toWebElement) {
+		Actions builder = new Actions(driver);
+		Action dragAndDrop = builder.clickAndHold(fromWebElement).moveToElement(toWebElement).release(toWebElement)
+				.build();
+		dragAndDrop.perform();
+	}
+
+	public static void dragAndDrop_Method3(WebDriver driver, WebElement fromWebElement, WebElement toWebElement)
+			throws InterruptedException {
+		Actions builder = new Actions(driver);
+		builder.clickAndHold(fromWebElement).moveToElement(toWebElement).perform();
+		Thread.sleep(2000);
+		builder.release(toWebElement).build().perform();
+	}
+
+	public static void hoverWebelement(WebDriver driver, WebElement HovertoWebElement) throws InterruptedException {
+		Actions builder = new Actions(driver);
+		builder.moveToElement(HovertoWebElement).perform();
+		Thread.sleep(2000);
+	}
+
+	public static void doubleClickWebelement(WebDriver driver, WebElement doubleclickonWebElement)
+			throws InterruptedException {
+		Actions builder = new Actions(driver);
+		builder.doubleClick(doubleclickonWebElement).perform();
+		Thread.sleep(2000);
+
+	}
+
+	public static String getToolTip(WebElement toolTipofWebElement) throws InterruptedException {
+		String tooltip = toolTipofWebElement.getAttribute("title");
+		System.out.println("Tool text : " + tooltip);
+		return tooltip;
+	}
+
+	public static void selectElementVisibleText(WebDriver driver, By by, String Name) {
+
+		WebElement element = driver.findElement(by);
+		Select selectitem = new Select(element);
+		selectitem.selectByVisibleText(Name);
+	}
+
+	public static void selectElementVisibleTextS(WebDriver driver, By by, By by2, String Name) {
+
+		WebElement element = driver.findElement(new ByChained(by, by2));
+		Select selectitem = new Select(element);
+		selectitem.selectByVisibleText(Name);
+	}
+
+	public static void selectElementByValueMethod(WebDriver driver, By by, String value) {
+		WebElement element = driver.findElement(by);
+		Select selectitem = new Select(element);
+		selectitem.selectByValue(value);
+	}
+
+	public static void selectElementByIndexMethod(WebDriver driver, By by, int index) {
+		WebElement elementIndex = driver.findElement(by);
+		Select selectitem = new Select(elementIndex);
+		selectitem.selectByIndex(index);
+	}
+
+	public static void selectElementByIndexListaUfPromocao(WebDriver driver, By by, By clickButton,ExtentReport reportHTML) {
+
+		try {
+			for (int i = 1; i <= 1; i++) {
+				WebElement elementIndex = driver.findElement(by);
+				Select selectitem = new Select(elementIndex);
+				selectitem.selectByIndex(0);
+				Robot rbt = new Robot();
+				rbt.keyPress(KeyEvent.VK_CONTROL);
+				rbt.keyPress(KeyEvent.VK_A);
+				rbt.keyRelease(KeyEvent.VK_CONTROL);
+				rbt.keyRelease(KeyEvent.VK_A);
+				click(driver, clickButton);
+			}
+		} catch (Exception e) {
+			//reportHTML.test.log(LogStatus.WARNING, "Plano nao encontrada");
+			return;
+		}
+
+	}
+
+	public static void clickCheckboxFromList(WebDriver driver, By xpathOfElement, String valueToSelect) {
+		List<WebElement> lst = driver.findElements(xpathOfElement);
+		System.out.println(lst.size());
+		for (int i = 0; i < lst.size(); i++) {
+			List<WebElement> dr = lst.get(i).findElements(By.className("label"));
+			// System.out.println(dr.get(0));
+			for (WebElement f : dr) {
+				System.out.println("value in the list : " + f.getText());
+				// if (valueToSelect.equals(f.getText())) {
+				f.click();
+				break;
+				// }
+			}
+		}
+	}
+
+	public static boolean isElementPresent(WebDriver driver, By by) {
+		try {
+			driver.findElement(by);
+			return true;
+		} catch (NoSuchElementException e) {
+			return false;
+		}
+	}
+
+	public void scroll(WebDriver driver, int ammount) {
+		JavascriptExecutor jse2 = (JavascriptExecutor) driver;
+		jse2.executeScript("window.scrollBy(0," + ammount + ")", "");
+	}
+
+	public static void clickCheckbox(WebDriver driver, By by, String valorSouN) {
+
+		List<WebElement> allCheckbox = driver.findElements(by);
+
+		for (WebElement checkbox : allCheckbox) {
+			if (checkbox.isSelected() == true) {
+
+				System.out.println("RadioButton is already checked");
+
+			} else {
+				if (checkbox.getAttribute("value").equals(valorSouN)) {
+					checkbox.click();
+					System.out.println("Selected the Radiobutton");
+				}
+			}
+		}
+	}
+
+	public static void clickCheckboxTableSubTiposSelectedTrue(WebDriver driver) {
+
+		List<WebElement> allCheckboxSubTiposClientes = driver.findElements(By.name("subTipoClienteList[]"));
+		for (WebElement checkbox : allCheckboxSubTiposClientes) {
+
+			if (checkbox.isSelected() == true) {
+				checkbox.click();
+			}
+		}
+	}
+
+	public static void clickCheckboxTableSubTipos(WebDriver driver, String opacaoCheckbox) {
+
+		/*
+		 * Se o campo for igual a null, a automação não seleciona nenhum checkBox.
+		 */
+		
+		List<WebElement> allCheckboxSubTiposClientes = driver.findElements(By.name("subTipoClienteList[]"));
+		for (WebElement checkbox : allCheckboxSubTiposClientes) {			
+			checkbox.click();
+		}
+		
+		
+		String CONSTANTE_TODOS = "Todos";
+
+		if (!opacaoCheckbox.equals("null")) {
+			int contador = opacaoCheckbox.length();
+			int posicaoDinamica = 0;
+			for (int i = 0; i < contador; i++) {
+				if (opacaoCheckbox.substring(i, i + 1).equals(";")) {
+					int posicao = i;
+					System.out.println(opacaoCheckbox.substring(posicaoDinamica, posicao));
+					String opacaoCheckboxTratado = opacaoCheckbox.substring(posicaoDinamica, posicao);
+
+					int ii = 2;
+					List<WebElement> allCheckboxSubTiposClientes2 = driver.findElements(By.name("subTipoClienteList[]"));
+					for (WebElement checkbox : allCheckboxSubTiposClientes2) {
+						
+						WebElement CheckboxText = driver
+								.findElement(By.xpath("//TD[@id='subtipos-cliente']/TABLE/TBODY/TR[" + ii + "]/TD[2]"));
+						
+						String ValueText = CheckboxText.getText().replaceAll(" ", "");
+						System.out.println(ValueText);
+						if (ValueText.equals(opacaoCheckboxTratado.replaceAll(" ", ""))) {
+							if (checkbox.isSelected() == false) {
+								checkbox.click();
+							}
+						} else if (opacaoCheckboxTratado.equals(CONSTANTE_TODOS)) {
+							if (checkbox.isSelected() == false) {
+								checkbox.click();
+							}
+
+						}
+						ii++;
+					}
+
+					posicaoDinamica = posicao + 1;
+				}
+			}
+		}
+
+	}
+
+	public static void clickCheckboxTableEstadosPromocao(WebDriver driver) {
+		int i = 2;
+		List<WebElement> allCheckboxSubTiposClientes = driver.findElements(By.name("idUfs"));
+		for (WebElement checkbox : allCheckboxSubTiposClientes) {
+			// WebElement CheckboxText = driver
+			// .findElement(By.xpath("//TD[@id='subtipos-cliente']/TABLE/TBODY/TR[" + i +
+			// "]/TD[2]"));
+			// String ValueText = CheckboxText.getText().replaceAll(" ", "");
+			// System.out.println(ValueText);
+			// if (ValueText.equals(opacaoCheckbox)) {
+			// if (checkbox.isSelected() == false) {
+			checkbox.click();
+			// }
+			// } else {
+			// else if (checkbox.isSelected() == true) {
+			// checkbox.click();
+			// }
+			// }
+			// i++;
+		}
+	}
+
+	public static void clickCheckboxTableCanalVenda(WebDriver driver, String opacaoCheckbox) {
+		List<WebElement> allCheckboxSubTiposClientes = driver.findElements(By.name("channelList[]"));
+
+		int ii = 1;
+		int i = 3;
+		for (WebElement checkbox : allCheckboxSubTiposClientes) {
+			if (ii >= 4) {
+				if (i >= 6) {
+					return;
+				}
+				ii = 1;
+				i++;
+			}
+			WebElement CheckboxText = driver
+					.findElement(By.xpath("//TABLE[@id='tbCanal']/TBODY/TR[" + i + "]/TD[" + ii + "]"));
+			String ValueText = CheckboxText.getText().replaceAll(" ", "");
+			System.out.println(ValueText);
+			if (opacaoCheckbox.equals("Todos")) {
+				System.out.println("oi");
+				if (checkbox.isSelected() == false) {
+					checkbox.click();
+				}
+			} else {
+				if (checkbox.isSelected() == true) {
+					checkbox.click();
+				}
+			}
+			ii++;
+		}
+	}
+
+	public static void clickCheckboxTableCanalPromocao(WebDriver driver, String opacaoCheckbox) {
+		/*
+		 * Se o campo for igual a null, a automação não seleciona nenhum checkBox.
+		 */
+		String CONSTANTE_TODOS = "Todos";
+
+		if (!opacaoCheckbox.equals("null")) {
+			int contador = opacaoCheckbox.length();
+			int posicaoDinamica = 0;
+			for (int i = 0; i < contador; i++) {
+				if (opacaoCheckbox.substring(i, i + 1).equals(";")) {
+					int posicao = i;
+					System.out.println(opacaoCheckbox.substring(posicaoDinamica, posicao));
+					String opacaoCheckboxTratado = opacaoCheckbox.substring(posicaoDinamica, posicao);
+
+					int ii = 2;
+					List<WebElement> allCheckboxSubTiposClientes = driver.findElements(By.name("canalPromocao"));
+					for (WebElement checkbox : allCheckboxSubTiposClientes) {
+						
+						WebElement CheckboxText = driver
+								.findElement(By.xpath("//DIV[@id='div_canal_promocao']/TABLE/TBODY/TR[" + ii + "]/TD"));
+						String ValueText = CheckboxText.getText().replaceAll(" ", "");
+						
+						System.out.println("tela"+ValueText);
+						System.out.println("planilha"+opacaoCheckbox);
+						if (ValueText.equals(opacaoCheckboxTratado.replaceAll(" ", ""))) {
+							if (checkbox.isSelected() == false) {
+								checkbox.click();
+								//break;
+							}
+						} else if (opacaoCheckboxTratado.equals(CONSTANTE_TODOS)) {
+							if (checkbox.isSelected() == false) {
+								checkbox.click();
+							}
+
+						}
+						ii++;
+					}
+
+					posicaoDinamica = posicao + 1;
+				}
+			}
+		}
+	}
+
+	public static void clickCheckboxTableTipoCenarioPromo(WebDriver driver, String opacaoCheckbox) {
+		int i = 2;
+		List<WebElement> allCheckboxSubTiposClientes = driver.findElements(By.name("tipoCenario"));
+		for (WebElement checkbox : allCheckboxSubTiposClientes) {
+			WebElement CheckboxText = driver
+					.findElement(By.xpath("//TR[@id='div_cenario']/TD[2]/TABLE/TBODY/TR[" + i + "]/TD"));
+			String ValueText = CheckboxText.getText().replaceAll(" ", "");
+			System.out.println(ValueText);
+			if (ValueText.equals(opacaoCheckbox)) {
+				if (checkbox.isSelected() == false) {
+					checkbox.click();
+				}
+			} else {
+				if (checkbox.isSelected() == true) {
+					checkbox.click();
+				}
+			}
+			i++;
+		}
+	}
+
+	public static void clickCheckboxTablePerfilPromocao(WebDriver driver, String opacaoCheckbox) {
+		int i = 2;
+		List<WebElement> allCheckboxSubTiposClientes = driver.findElements(By.name("perfil"));
+		for (WebElement checkbox : allCheckboxSubTiposClientes) {
+			WebElement CheckboxText = driver
+					.findElement(By.xpath("//TR[@id='div_perfil']/TD[2]/TABLE/TBODY/TR[" + i + "]/TD"));
+			String ValueText = CheckboxText.getText().replaceAll(" ", "");
+			System.out.println(ValueText);
+			if (opacaoCheckbox.equals("Todos")) {
+				if (checkbox.isSelected() == false) {
+					checkbox.click();
+				}
+			} else {
+				if (checkbox.isSelected() == true) {
+					checkbox.click();
+				}
+			}
+			i++;
+		}
+	}
+	
+	public static void clickDdd(WebDriver driver, int indice) {
+        List<WebElement> allDdds = driver.findElements(By.id("localeCodes"));
+
+        allDdds.get(indice).click();
+	}
+	
+	public static void expandirDDD(WebDriver driver, String estados) throws InterruptedException {
+		
+		int contador = estados.length();
+        int posicaoDinamica = 0;
+
+        int amazonasAberto = 0;
+        int bahiaAberto = 0;
+        int cearaAberto = 0;
+        int espiritoSantoAberto = 0;
+        int goiasAberto = 0;
+        int maranhaoAberto = 0;
+        int matoGrossoAberto = 0;
+        int minasGeraisAberto = 0;
+        int paraAberto = 0;
+        int paranaAberto = 0;
+        int pernambucoAberto = 0;
+        int piauiAberto = 0;
+        int rioDeJaneiroAberto = 0;
+        int rioGrandeDoSulAberto = 0;
+        int santaCatarinaAberto = 0;
+        int saoPauloAberto = 0;
+
+        for (int i = 0; i < contador; i++) {
+               if (estados.substring(i, i + 1).equals(";")) {
+                     int posicao = i;
+
+                      System.out.println(estados.substring(posicaoDinamica, posicao));
+                     String estadosTratado = estados.substring(posicaoDinamica, posicao);
+
+                     if (estadosTratado.equals("Todos")) {
+
+                            clickCheckboxTableEstadosPromocao(driver);
+//                          expandirDdds(driver);
+                     }
+
+                     else if (estadosTratado.toLowerCase().contains("exceto")) {
+
+                            int contador2 = estadosTratado.length();
+
+                            for (int ii = 0; ii < contador2; ii++) {
+                                  if (estadosTratado.substring(ii, ii + 1).equals(" ")) {
+                                         int StringTotal = ii + 1;
+
+                                         String DDDTratado = estadosTratado.substring(StringTotal, contador2);
+
+                                         if (DDDTratado.equals("DDD68")) {
+                                               click(driver, CriarPromocaoPageObject.abreAbasColuna1(ConstDddUf.ACRE));
+                                               Thread.sleep(1000);
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD82")) {
+                                               click(driver, CriarPromocaoPageObject.abreAbasColuna1(ConstDddUf.ALAGOAS));
+                                               Thread.sleep(1000);
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD96")) {
+                                               click(driver, CriarPromocaoPageObject.abreAbasColuna1(ConstDddUf.AMAPA));
+                                               Thread.sleep(1000);
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD92") || DDDTratado.equals("DDD97")) {
+                                               if (amazonasAberto == 0) {
+                                                      click(driver, CriarPromocaoPageObject.abreAbasColuna1(ConstDddUf.AMAZONAS));
+                                                      amazonasAberto = 1;
+                                                      Thread.sleep(1000);
+                                               }
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD71") || DDDTratado.equals("DDD73") || DDDTratado.equals("DDD74")
+                                                      || DDDTratado.equals("DDD75") || DDDTratado.equals("DDD77")) {
+                                               if (bahiaAberto == 0) {
+                                                      click(driver, CriarPromocaoPageObject.abreAbasColuna1(ConstDddUf.BAHIA));
+                                                      bahiaAberto = 1;
+                                                      Thread.sleep(1000);
+                                               }
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD85") || DDDTratado.equals("DDD88")) {
+                                               if (cearaAberto == 0) {
+                                                      click(driver, CriarPromocaoPageObject.abreAbasColuna1(ConstDddUf.CEARA));
+                                                      cearaAberto = 1;
+                                                      Thread.sleep(1000);
+                                               }
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD61")) {
+                                               click(driver, CriarPromocaoPageObject.abreAbasColuna1(ConstDddUf.DISTRITO_FEDERAL));
+                                               Thread.sleep(1000);
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD27") || DDDTratado.equals("DDD28")) {
+                                               if (espiritoSantoAberto == 0) {
+                                                      click(driver, CriarPromocaoPageObject.abreAbasColuna1(ConstDddUf.ESPIRITO_SANTO));
+                                                      espiritoSantoAberto = 1;
+                                                      Thread.sleep(1000);
+                                               }
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD62") || DDDTratado.equals("DDD64")) {
+                                               if (goiasAberto == 0) {
+                                                      click(driver, CriarPromocaoPageObject.abreAbasColuna1(ConstDddUf.GOIAS));
+                                                      goiasAberto = 1;
+                                                      Thread.sleep(1000);
+                                               }
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD98") || DDDTratado.equals("DDD99")) {
+                                               if (maranhaoAberto == 0) {
+                                                      click(driver, CriarPromocaoPageObject.abreAbasColuna2(ConstDddUf.MARANHAO));
+                                                      maranhaoAberto = 1;
+                                                      Thread.sleep(1000);
+                                               }
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD65") || DDDTratado.equals("DDD66")) {
+                                               if (matoGrossoAberto == 0) {
+                                                      click(driver, CriarPromocaoPageObject.abreAbasColuna2(ConstDddUf.MATO_GROSSO));
+                                                      matoGrossoAberto = 1;
+                                                      Thread.sleep(1000);
+                                               }
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD67")) {
+                                               click(driver, CriarPromocaoPageObject.abreAbasColuna2(ConstDddUf.MATO_GROSSO_DO_SUL));
+                                               Thread.sleep(1000);
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD31") || DDDTratado.equals("DDD32") || DDDTratado.equals("DDD33")
+                                                      || DDDTratado.equals("DDD34") || DDDTratado.equals("DDD35")
+                                                      || DDDTratado.equals("DDD37") || DDDTratado.equals("DDD38")) {
+                                               if (minasGeraisAberto == 0) {
+                                                      click(driver, CriarPromocaoPageObject.abreAbasColuna2(ConstDddUf.MINAS_GERAIS));
+                                                      minasGeraisAberto = 1;
+                                                      Thread.sleep(1000);
+                                               }
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD91") || DDDTratado.equals("DDD93")
+                                                      || DDDTratado.equals("DDD94")) {
+                                               if (paraAberto == 0) {
+                                                      click(driver, CriarPromocaoPageObject.abreAbasColuna2(ConstDddUf.PARA));
+                                                      paraAberto = 1;
+                                                      Thread.sleep(1000);
+                                               }
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD83")) {
+                                               click(driver, CriarPromocaoPageObject.abreAbasColuna2(ConstDddUf.PARAIBA));
+                                               Thread.sleep(1000);
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD41") || DDDTratado.equals("DDD42") || DDDTratado.equals("DDD43")
+                                                      || DDDTratado.equals("DDD44") || DDDTratado.equals("DDD45")
+                                                      || DDDTratado.equals("DDD46")) {
+                                               if (paranaAberto == 0) {
+                                                      click(driver, CriarPromocaoPageObject.abreAbasColuna2(ConstDddUf.PARANA));
+                                                      paranaAberto = 1;
+                                                      Thread.sleep(1000);
+                                               }
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD81") || DDDTratado.equals("DDD87")) {
+                                               if (pernambucoAberto == 0) {
+                                                      click(driver, CriarPromocaoPageObject.abreAbasColuna2(ConstDddUf.PERNAMBUCO));
+                                                      pernambucoAberto = 1;
+                                                      Thread.sleep(1000);
+                                               }
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD86") || DDDTratado.equals("DDD89")) {
+                                               if (piauiAberto == 0) {
+                                                      click(driver, CriarPromocaoPageObject.abreAbasColuna2(ConstDddUf.PIAUI));
+                                                      piauiAberto = 1;
+                                                      Thread.sleep(1000);
+                                               }
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD21") || DDDTratado.equals("DDD22")
+                                                      || DDDTratado.equals("DDD24")) {
+                                               if (rioDeJaneiroAberto == 0) {
+                                                      click(driver, CriarPromocaoPageObject.abreAbasColuna3(ConstDddUf.RIO_DE_JANEIRO));
+                                                      rioDeJaneiroAberto = 1;
+                                                      Thread.sleep(1000);
+                                               }
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD84")) {
+                                               click(driver, CriarPromocaoPageObject.abreAbasColuna3(ConstDddUf.RIO_GRANDE_DO_NORTE));
+                                               Thread.sleep(1000);
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD51") || DDDTratado.equals("DDD53") || DDDTratado.equals("DDD54")
+                                                      || DDDTratado.equals("DDD55")) {
+                                               if (rioGrandeDoSulAberto == 0) {
+                                                      click(driver,
+                                                                   CriarPromocaoPageObject.abreAbasColuna3(ConstDddUf.RIO_GRANDE_DO_SUL));
+                                                      rioGrandeDoSulAberto = 1;
+                                                      Thread.sleep(1000);
+                                               }
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD69")) {
+                                               click(driver, CriarPromocaoPageObject.abreAbasColuna3(ConstDddUf.RONDONIA));
+                                               Thread.sleep(1000);
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD95")) {
+                                               click(driver, CriarPromocaoPageObject.abreAbasColuna3(ConstDddUf.RORAIMA));
+                                               Thread.sleep(1000);
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD47") || DDDTratado.equals("DDD48")
+                                                      || DDDTratado.equals("DDD49")) {
+                                               if (santaCatarinaAberto == 0) {
+                                                      click(driver, CriarPromocaoPageObject.abreAbasColuna3(ConstDddUf.SANTA_CATARINA));
+                                                      santaCatarinaAberto = 1;
+                                                      Thread.sleep(1000);
+                                               }
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD11") || DDDTratado.equals("DDD12") || DDDTratado.equals("DDD13")
+                                                      || DDDTratado.equals("DDD14") || DDDTratado.equals("DDD15")
+                                                      || DDDTratado.equals("DDD16") || DDDTratado.equals("DDD17")
+                                                      || DDDTratado.equals("DDD18") || DDDTratado.equals("DDD19")) {
+                                               if (saoPauloAberto == 0) {
+                                                      click(driver, CriarPromocaoPageObject.abreAbasColuna3(ConstDddUf.SAO_PAULO));
+                                                      saoPauloAberto = 1;
+                                                      Thread.sleep(1000);
+                                               }
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD79")) {
+                                               click(driver, CriarPromocaoPageObject.abreAbasColuna3(ConstDddUf.SERGIPE));
+                                               Thread.sleep(1000);
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                         if (DDDTratado.equals("DDD63")) {
+                                               click(driver, CriarPromocaoPageObject.abreAbasColuna3(ConstDddUf.TOCANTINS));
+                                               Thread.sleep(1000);
+                                                isSelectedTrueUFDDD(driver, DDDTratado);
+                                         }
+
+                                  }
+                            }
+                     }
+
+                     else {
+                            System.out.println("caiu no else" + " " + estados + " " + estadosTratado);
+                            isSelectedTrueUFDDD(driver, estadosTratado);
+                     }
+                     posicaoDinamica = posicao + 1;
+               }
+               
+        }
+		
+	}
+	
+
+	public static void isSelectedTrueUFDDD(WebDriver driver, String ufDDD) {
+
+
+        switch (ufDDD) {
+        case "DDD68":
+               clickDdd(driver, ConstDddUf.DDD68);
+               break;
+        case "DDD82":
+               clickDdd(driver, ConstDddUf.DDD82);
+               break;
+        case "DDD96":                    
+               clickDdd(driver, ConstDddUf.DDD96);
+               break;
+        case "DDD92":
+               clickDdd(driver, ConstDddUf.DDD92);
+               break;
+        case "DDD97":
+               clickDdd(driver, ConstDddUf.DDD97);
+               break;
+        case "DDD71":
+               clickDdd(driver, ConstDddUf.DDD71);
+               break;
+        case "DDD73":
+               clickDdd(driver, ConstDddUf.DDD73);
+               break;
+        case "DDD74":
+               clickDdd(driver, ConstDddUf.DDD74);
+               break;
+        case "DDD75":
+               clickDdd(driver, ConstDddUf.DDD75);
+               break;
+        case "DDD77":
+               clickDdd(driver, ConstDddUf.DDD77);
+               break;
+        case "DDD85":
+               clickDdd(driver, ConstDddUf.DDD85);
+               break;
+        case "DDD88":
+               clickDdd(driver, ConstDddUf.DDD88);
+               break;
+        case "DDD61":                    
+               clickDdd(driver, ConstDddUf.DDD61);
+               break;
+        case "DDD27":
+               clickDdd(driver, ConstDddUf.DDD27);
+               break;
+        case "DDD28":
+               clickDdd(driver, ConstDddUf.DDD28);
+               break;
+        case "DDD62":
+               clickDdd(driver, ConstDddUf.DDD62);
+               break;
+        case "DDD64":
+               clickDdd(driver, ConstDddUf.DDD64);
+               break;
+        case "DDD98":
+               clickDdd(driver, ConstDddUf.DDD98);
+               break;
+        case "DDD99":
+               clickDdd(driver, ConstDddUf.DDD99);
+               break;
+        case "DDD65":
+               clickDdd(driver, ConstDddUf.DDD65);
+               break;
+        case "DDD66":
+               clickDdd(driver, ConstDddUf.DDD66);
+               break;
+        case "DDD67":                    
+               clickDdd(driver, ConstDddUf.DDD67);
+               break;
+        case "DDD31":
+               clickDdd(driver, ConstDddUf.DDD31);
+               break;
+        case "DDD32":
+               clickDdd(driver, ConstDddUf.DDD32);
+               break;
+        case "DDD33":
+               clickDdd(driver, ConstDddUf.DDD33);
+               break;
+        case "DDD34":
+               clickDdd(driver, ConstDddUf.DDD34);
+               break;
+        case "DDD35":
+               clickDdd(driver, ConstDddUf.DDD35);
+               break;
+        case "DDD37":
+               clickDdd(driver, ConstDddUf.DDD37);
+               break;
+        case "DDD38":
+               clickDdd(driver, ConstDddUf.DDD38);
+               break;
+        case "DDD91":
+               clickDdd(driver, ConstDddUf.DDD91);
+               break;
+        case "DDD93":
+               clickDdd(driver, ConstDddUf.DDD93);
+               break;
+        case "DDD94":
+               clickDdd(driver, ConstDddUf.DDD94);
+               break;
+        case "DDD83":                    
+               clickDdd(driver, ConstDddUf.DDD83);
+               break;
+        case "DDD41":
+               clickDdd(driver, ConstDddUf.DDD41);
+               break;
+        case "DDD42":
+               clickDdd(driver, ConstDddUf.DDD42);
+               break;
+        case "DDD43":
+               clickDdd(driver, ConstDddUf.DDD43);
+               break;
+        case "DDD44":
+               clickDdd(driver, ConstDddUf.DDD44);
+               break;
+        case "DDD45":
+               clickDdd(driver, ConstDddUf.DDD45);
+               break;
+        case "DDD46":
+               clickDdd(driver, ConstDddUf.DDD46);
+               break;
+        case "DDD81":
+               clickDdd(driver, ConstDddUf.DDD81);
+               break;
+        case "DDD87":
+               clickDdd(driver, ConstDddUf.DDD87);
+               break;
+        case "DDD86":
+               clickDdd(driver, ConstDddUf.DDD86);
+               break;
+        case "DDD89":
+               clickDdd(driver, ConstDddUf.DDD89);
+               break;
+        case "DDD21":
+               clickDdd(driver, ConstDddUf.DDD21);
+               break;
+        case "DDD22":
+               clickDdd(driver, ConstDddUf.DDD22);
+               break;
+        case "DDD24":
+               clickDdd(driver, ConstDddUf.DDD24);
+               break;
+        case "DDD84":                    
+               clickDdd(driver, ConstDddUf.DDD84);
+               break;
+        case "DDD51":
+               clickDdd(driver, ConstDddUf.DDD51);
+               break;
+        case "DDD53":
+               clickDdd(driver, ConstDddUf.DDD53);
+               break;
+        case "DDD54":
+               clickDdd(driver, ConstDddUf.DDD54);
+               break;
+        case "DDD55":
+               clickDdd(driver, ConstDddUf.DDD55);
+               break;
+        case "DDD69":                    
+               clickDdd(driver, ConstDddUf.DDD69);
+               break;
+        case "DDD95":                    
+               clickDdd(driver, ConstDddUf.DDD95);
+               break;
+        case "DDD47":
+               clickDdd(driver, ConstDddUf.DDD47);
+               break;
+        case "DDD48":
+               clickDdd(driver, ConstDddUf.DDD48);
+               break;
+        case "DDD49":
+               clickDdd(driver, ConstDddUf.DDD49);
+               break;
+        case "DDD11":
+               clickDdd(driver, ConstDddUf.DDD11);
+               break;
+        case "DDD12":
+               clickDdd(driver, ConstDddUf.DDD12);
+               break;
+        case "DDD13":
+               clickDdd(driver, ConstDddUf.DDD13);
+               break;
+        case "DDD14":
+               clickDdd(driver, ConstDddUf.DDD14);
+               break;
+        case "DDD15":
+               clickDdd(driver, ConstDddUf.DDD15);
+               break;
+        case "DDD16":
+               clickDdd(driver, ConstDddUf.DDD16);
+               break;
+        case "DDD17":
+               clickDdd(driver, ConstDddUf.DDD17);
+               break;
+        case "DDD18":
+               clickDdd(driver, ConstDddUf.DDD18);
+               break;
+        case "DDD19":
+               clickDdd(driver, ConstDddUf.DDD19);
+               break;
+        case "DDD79":                    
+               clickDdd(driver, ConstDddUf.DDD79);
+               break;
+        case "DDD63":                    
+               clickDdd(driver, ConstDddUf.DDD63);
+               break;
+
+        default:
+               Assert.fail("DDD não encontrado no sistema!");
+
+        }
+
+
+	}
+
+	public static void clickCheckboxTableEstados(WebDriver driver, String opacaoCheckbox) {
+		List<WebElement> allCheckboxSubTiposClientes = driver.findElements(By.name("idUfs@4"));
+
+		int ii = 1;
+		int i = 3;
+		for (WebElement checkbox : allCheckboxSubTiposClientes) {
+			if (ii >= 11) {
+				if (i >= 6) {
+					return;
+				}
+				ii = 1;
+				i++;
+			}
+			WebElement CheckboxText = driver
+					.findElement(By.xpath("//TABLE[@id='tbEstados']/TBODY/TR[" + i + "]/TD[" + ii + "]"));
+			String ValueText = CheckboxText.getText().replaceAll(" ", "");
+			System.out.println(ValueText);
+			if (opacaoCheckbox.equals("Todos")) {
+				System.out.println("oi");
+				if (checkbox.isSelected() == false) {
+					checkbox.click();
+				}
+			} else {
+				if (checkbox.isSelected() == true) {
+					checkbox.click();
+				}
+			}
+			ii++;
+		}
+	}
+
+}

@@ -1,0 +1,16 @@
+package PageObjects;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+public class CriarPacotePageObject {
+	
+	public static final By linkGrupoOffers = By.id("imgsub990");
+	public static final By linkCriarPacote = By.xpath("//a[@href='/ClaroAdministradorWeb/OffersCriarGroupOffer.do']");
+	public static final By inputNameOfferGrup = By.name("offerGroupName");
+	public static final By inputDtInicio = By.name("dataInicioOfferGroup");
+	public static final By inputDtFim = By.name("dataFimOfferGroup");
+	public static final By selectListaPacote = By.name("listCategoriaPacote");
+	public static final By checkAlertaCobranca = By.name("fgAlertaCobranca");
+	public static final By clickButtonCriar = By.xpath("//*[starts-with(@value, 'Criar')]");
+}

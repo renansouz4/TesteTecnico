@@ -1,0 +1,127 @@
+package TestCases;
+
+import static org.junit.Assert.*;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.openqa.selenium.WebDriver;
+
+import com.relevantcodes.extentreports.LogStatus;
+
+import Actions.PlanoAction;
+import BancoDeDados.ConexaoComBancoDados;
+import ConstantsFramework.Constants_Framework;
+import ConstantsSuiteTests.ConstantsSpreadsheet;
+import Json.Constants_JSON;
+import Json.JSONParserUtil;
+import Json.TestCaseObject;
+import Report.ExtentReport;
+import Report.Report;
+import Spreadsheet.ObjectEnvironment;
+import Spreadsheet.Spreadsheet;
+
+
+@RunWith(Parameterized.class)
+public class TestCaseCriarPromocao {
+
+	@Rule
+	public TestWatcher watchman = new TestWatcher() {
+		@Override
+		protected void failed(Throwable e, Description description) {
+			// reportHTML.test.log(LogStatus.FAIL, "TestCase finalizado com erro");
+			// AtualizarStatus.atualizarPlanilha(Constants.EXCEL_CRIAR_PLANO,TEST_CASE_ID,
+			// "FALIED");
+		}
+
+		@Override
+		protected void succeeded(Description description) {
+			// reportHTML.test.log(LogStatus.PASS, "TestCase finalizado com sucesso");
+			// AtualizarStatus.atualizarPlanilha(Constants.EXCEL_CRIAR_PLANO,TEST_CASE_ID,
+			// "PASSED");
+		}
+	};
+
+	private WebDriver driver;
+	ExtentReport reportHTML = new ExtentReport();
+	Report report;
+	PlanoAction parametrizacaoAction;
+	ConexaoComBancoDados bancoDeDados;
+	ObjectEnvironment environment;
+
+	private String TEST_CASE_NAME;	
+	private String PLOMOCAO_ID;
+
+
+
+	public TestCaseCriarPromocao(String PLANO_ID        ) {        
+		//	String CLARO_INTERNET                     ,
+		//	String DESCRICAO_PLANO_4G                 ) {
+		
+		//this.PLANO_ID = PLANO_ID;                                          
+		//this.CLARO_INTERNET = CLARO_INTERNET;                    
+		//this.DESCRICAO_PLANO_4G = DESCRICAO_PLANO_4G;              
+                         
+
+	}
+
+	@Before
+	public void setUp() {
+		//driver = WebDriverManager.getDriver(DriverType.INTERNETEXPLORER);
+		report = new Report(driver);
+		parametrizacaoAction = new PlanoAction(driver,reportHTML,report);
+		bancoDeDados = new ConexaoComBancoDados();
+		environment = new ObjectEnvironment(Arrays.asList(Spreadsheet.getStringSpreadsheetAmbiente()));
+
+	}
+
+	@Parameterized.Parameters
+	public static Collection<Object> input() {
+		Object[] objeto = Spreadsheet.getArraySpreadsheetPlan(ConstantsSpreadsheet.EXCEL_PROMOCOES);
+		return Arrays.asList(objeto);
+	}
+
+	@Test
+	public void criarPromocaoTest() {
+		
+
+		reportHTML.test = ExtentReport.extent.startTest(TEST_CASE_NAME);
+		reportHTML.test.log(LogStatus.INFO, "Iniciando Teste do sistema de parametrizacao da Claro...");		
+		reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+
+	}
+
+	@After
+	public void fim() throws Exception {
+		ExtentReport.extent.flush();
+		report.createReportPdf(TEST_CASE_NAME);
+		writeJsonFile();
+		// driver.close();
+	     //driver.quit();
+	}
+
+	private void writeJsonFile() {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
+		objectMap.put(Constants_JSON.JSON_DATA_TESTE, dtf.format(now));
+		objectMap.put(Constants_JSON.JSON_AMBIENTE, environment.getENVIRONMENT());
+	//	objectMap.put(Constants_JSON.JSON_NOME_PLANO_RESERVADO, this.NOME_PLANO_RESERVADO);
+
+		TestCaseObject testCaseObject = new TestCaseObject(this.PLOMOCAO_ID, objectMap);
+		JSONParserUtil.writeJsonFile(testCaseObject);
+	}
+
+}

@@ -1,0 +1,146 @@
+package br.com.accenture.TestCases;
+
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.openqa.selenium.WebDriver;
+
+import com.relevantcodes.extentreports.LogStatus;
+
+import Actions.ParametrizacaoAction;
+import BancoDeDados.ConexaoComBancoDados;
+import dataReader.ExcelRead;
+import enums.DriverType;
+import managers.WebDriverManager;
+import report.ExtentReport;
+import report.Report;
+import util.Constants;
+import util.Excel;
+
+@RunWith(Parameterized.class)
+public class TestCaseCriarPlano {
+
+	@Rule
+	public TestWatcher watchman = new TestWatcher() {
+		@Override
+		protected void failed(Throwable e, Description description) {
+			// reportHTML.test.log(LogStatus.FAIL, "TestCase finalizado com erro");
+			// AtualizarStatus.atualizarPlanilha(Constants.EXCEL_CRIAR_PLANO,TEST_CASE_ID,
+			// "FALIED");
+		}
+
+		@Override
+		protected void succeeded(Description description) {
+			// reportHTML.test.log(LogStatus.PASS, "TestCase finalizado com sucesso");
+			// AtualizarStatus.atualizarPlanilha(Constants.EXCEL_CRIAR_PLANO,TEST_CASE_ID,
+			// "PASSED");
+		}
+	};
+
+	private WebDriver driver;
+	ExtentReport reportHTML = new ExtentReport();
+	Report report;
+	Excel AtualizarStatus;
+	ParametrizacaoAction parametrizacaoAction;
+	ConexaoComBancoDados bancoDeDados;
+	private int ID_ULTIMO_REVERSADO;
+	private String NOME_PLANO_RESERVADO;
+
+	private String TEST_CASE_NAME;
+	private String TEST_CASE_ID;
+	private String STATUS;
+	private String USUARIO;
+	private String SENHA;
+	private String TECNOLOGIA;
+	private String TECNOLOGIA_COMPLET;
+	private String V_COBERTURA;
+	private String TRIPLE_A;
+	private String INCLUS_DEP_BL;
+	private String OBRIG_DEPENDENT;
+	private String PERMIT_DEPENDENT_CONTROL;
+	private String APRESEN_PLANO_OMS;
+
+	public TestCaseCriarPlano(String TEST_CASE_NAME, String TEST_CASE_ID, String STATUS, String USUARIO, String SENHA,
+			String TECNOLOGIA, String TECNOLOGIA_COMPLET, String V_COBERTURA, String TRIPLE_A, String INCLUS_DEP_BL,
+			String OBRIG_DEPENDENT, String PERMIT_DEPENDENT_CONTROL, String APRESEN_PLANO_OMS) {
+		this.TEST_CASE_NAME = TEST_CASE_NAME;
+		this.TEST_CASE_ID = TEST_CASE_ID;
+		this.STATUS = STATUS;
+		this.USUARIO = USUARIO;
+		this.SENHA = SENHA;
+		this.TECNOLOGIA = TECNOLOGIA;
+		this.TECNOLOGIA_COMPLET = TECNOLOGIA_COMPLET;
+		this.V_COBERTURA = V_COBERTURA;
+		this.TRIPLE_A = TRIPLE_A;
+		this.INCLUS_DEP_BL = INCLUS_DEP_BL;
+		this.OBRIG_DEPENDENT = OBRIG_DEPENDENT;
+		this.PERMIT_DEPENDENT_CONTROL = PERMIT_DEPENDENT_CONTROL;
+		this.APRESEN_PLANO_OMS = APRESEN_PLANO_OMS;
+
+	}
+
+	@Before
+	public void setUp() {
+		driver = WebDriverManager.getDriver(DriverType.INTERNETEXPLORER);
+		report = new Report(driver);
+		AtualizarStatus = new Excel();
+		parametrizacaoAction = new ParametrizacaoAction(driver,reportHTML,report);
+		bancoDeDados = new ConexaoComBancoDados();
+
+	}
+
+	@Parameterized.Parameters
+	public static Collection<Object> input() {
+		Object[] objeto = ExcelRead.getArray(Constants.EXCEL_CRIAR_PLANO);
+		return Arrays.asList(objeto);
+	}
+
+	@Test
+	public void criarPlanoTest() {
+
+		//ID_ULTIMO_REVERSADO = bancoDeDados.buscaUltimoPlReservado();
+		//NOME_PLANO_RESERVADO = "Plano reservado " + ID_ULTIMO_REVERSADO;
+		
+		//Linha abaixo escrita em Hardcode. Contingência aguardando configuração da planilha de informações
+		NOME_PLANO_RESERVADO = "Plano reservado 259";
+
+		reportHTML.test = ExtentReport.extent.startTest(TEST_CASE_NAME);
+		reportHTML.test.log(LogStatus.INFO, "Iniciando Teste do sistema de parametrizacao da Claro...");
+
+		parametrizacaoAction.realizarLogin(USUARIO, SENHA);
+		/*parametrizacaoAction.criarPlanoReservado(NOME_PLANO_RESERVADO);
+		parametrizacaoAction.ativarPlano(NOME_PLANO_RESERVADO, "Sao Paulo", "23/05/2019");
+		parametrizacaoAction.alterarPlanoReservado("Sao Paulo",NOME_PLANO_RESERVADO, "nomePlanoNovo","descricaoPlanoNovo",
+				"descricaoPrecarioNovo","descricaoAbreviadaNovo","WA/WM", "GSM","S","S","Claro Cartão","S",
+				"S","S","S");*/
+		parametrizacaoAction.associarPlano("Sao Paulo", NOME_PLANO_RESERVADO, "Plano reservado 259 - GSM - (SP)", "pós play", "Claro Pós Play 7GB 2018 - Cód Anatel 155",
+				"Claro Pós Play 7GB 2018 - Cód Anatel 155 - Franquia", "Claro Pós Play 15GB 2018 - Cód Anatel 155");
+		
+		reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+
+	}
+
+
+	@After
+	public void fim() throws Exception {
+		ExtentReport.extent.flush();
+		report.createReportPdf(TEST_CASE_NAME);
+		// driver.close();
+		// driver.quit();
+	}
+		
+
+}

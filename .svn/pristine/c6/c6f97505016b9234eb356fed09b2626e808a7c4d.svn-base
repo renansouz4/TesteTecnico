@@ -1,0 +1,12 @@
+package PageObjects;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+public class LoginPageObject {
+	
+	public static final By inputUsuario = By.name("j_username");
+	public static final By inputSenha = By.name("j_password");
+	public static final By clickEntrar = By.name("button");
+
+}

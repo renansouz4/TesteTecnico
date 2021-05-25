@@ -1,0 +1,179 @@
+package Actions;
+
+import org.openqa.selenium.WebDriver;
+
+import com.relevantcodes.extentreports.LogStatus;
+
+import ActionFindElementSelenium.AcoesFindElement;
+import ConstantsSuiteTests.ConstanteUrlBroweser;
+import PageObjects.AssociarOfertaDependentePageObject;
+import PageObjects.AssociarPacotePageObject;
+import PageObjects.AssociarPlanoPageObject;
+import PageObjects.AssociarPromocaoPageObject;
+import PageObjects.CriarPacotePageObject;
+import PageObjects.CriarPlanoPageObject;
+import PageObjects.CriarPromocaoPageObject;
+import Report.ExtentReport;
+import Report.Report;
+
+/**
+ * - Class Action
+ * 
+ * @author rodrigo.c.almeida
+ * 
+ */
+public class PacoteAction extends AcoesFindElement {
+
+	private WebDriver driver;
+	String URL = ConstanteUrlBroweser.URL_CLARO;
+	private ExtentReport reportHTML;
+	private Report report;
+
+	/**
+	 * - Construtor da Class.
+	 */
+	public PacoteAction(WebDriver driver, ExtentReport reportHTML, Report report) {
+		this.driver = driver;
+		this.reportHTML = reportHTML;
+		this.report = report;
+	}
+
+	/**
+	 * - Método responsável por criar o pacote do tipo passaporte .
+	 */
+	public void criarPacotePassaporte(String nomeOffer, String dtInicio, String dtFim, String listaPacote) {		
+		click(driver, CriarPacotePageObject.linkGrupoOffers);
+		click(driver, CriarPacotePageObject.linkCriarPacote);
+		fillInput(driver, CriarPacotePageObject.inputNameOfferGrup, nomeOffer);
+		fillInput(driver, CriarPacotePageObject.inputDtInicio, dtInicio);
+		fillInput(driver, CriarPacotePageObject.inputDtFim, dtFim);
+		selectElementVisibleText(driver, CriarPacotePageObject.selectListaPacote, listaPacote);
+		click(driver, CriarPacotePageObject.clickButtonCriar);
+	}
+	
+	/**
+	 * - Método responsável por associar o pacote do tipo passaporte .
+	 */
+	public void associarPacotePassaporte(String nomeGrupoOffer, String listaGrupoOffer) {		
+		click(driver, AssociarPacotePageObject.linkGrupoOffers);
+		click(driver, AssociarPacotePageObject.linkAssociarPacote);
+		fillInput(driver, AssociarPacotePageObject.inputNomeGrupoOffer, nomeGrupoOffer);
+		click(driver, AssociarPacotePageObject.clickButtonPesquisar);
+		selectElementVisibleText(driver, AssociarPacotePageObject.selectListaGrupoOffer, listaGrupoOffer);
+		click(driver, AssociarPacotePageObject.clickButtonAddOffer);
+		
+	}
+	
+	/**
+	 * - Método responsável por associar o pacote do tipo família novo.
+	 */
+	public void associarPacoteFamiliaNovo(String nomeGrupoOffer, String nomePlano) {	
+
+		String constante_familia = "Família";
+		String constante_passaporte = "Passaporte";
+		String selectNomeGrupoOffer = null;
+
+		if (!nomeGrupoOffer.equals("null")) {
+			int contador = nomeGrupoOffer.length();
+			int posicaoDinamica = 0;
+			for (int i = 0; i < contador; i++) {
+				if (nomeGrupoOffer.substring(i, i + 1).equals(";")) {
+					int posicao = i;
+					
+					System.out.println(nomeGrupoOffer.substring(posicaoDinamica, posicao));
+					String nomeGrupoOfferTratado = nomeGrupoOffer.substring(posicaoDinamica, posicao);
+                   /*
+                    * Para quando o pacote é família
+                    * 
+                    * 
+                    */
+					if (nomeGrupoOfferTratado.toLowerCase().contains(constante_familia.toLowerCase())) {
+						reportHTML.test.log(LogStatus.INFO,
+								"Iniciando a associacao da Offer do novo plano família de nome: " + nomeGrupoOffer);
+						reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+						
+						String nomeGrupoOfferFamiliaTratado = nomeGrupoOfferTratado.substring(0, nomeGrupoOfferTratado.indexOf("-"));
+						System.out.println(nomeGrupoOfferFamiliaTratado);
+
+						int contador1 = nomeGrupoOfferTratado.length();
+						int posicaoDinamica1 = 0;
+						for (int i1 = 0; i1 < contador1; i1++) {
+							if (nomeGrupoOfferTratado.substring(i1, i1 + 1).equals("-")) {
+								int posicao1 = i1;
+								selectNomeGrupoOffer = nomeGrupoOfferTratado.substring(posicao1, contador1);
+								posicaoDinamica1 = posicao1 + 1;
+							}
+						}
+
+						click(driver, AssociarPacotePageObject.linkGrupoOffers);
+						click(driver, AssociarPacotePageObject.linkAssociarPacote);
+						fillInput(driver, AssociarPacotePageObject.inputNomeGrupoOffer, nomeGrupoOfferFamiliaTratado);
+						click(driver, AssociarPacotePageObject.clickButtonPesquisar);
+						selectElementByIndexMethod(driver, AssociarPacotePageObject.selectListaGrupoOffer, 1);
+						fillInput(driver, AssociarPacotePageObject.inputNomeOffer, selectNomeGrupoOffer);
+						click(driver, AssociarPacotePageObject.clickButtonFiltrar);
+						selectElementByIndexMethod(driver, AssociarPacotePageObject.selectListMandatoryOffers, 0);
+						click(driver, AssociarPacotePageObject.clickButtonAddOffer);
+						reportHTML.test.log(LogStatus.INFO, "Offer associada com sucesso");
+						reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+						
+						fillInput(driver, AssociarPacotePageObject.inputNomePlano, nomePlano);
+						click(driver, AssociarPacotePageObject.clickButtonFiltrarPlano);
+					//	selectElementByIndexListaUfPromocao(driver,AssociarPacotePageObject.selectListaPlano,AssociarPacotePageObject.clickButtonAddPlano);
+					}
+					
+					/*
+					 * 
+					 * Para quando o pacote é passaport
+					 * 
+					 */
+					
+					if (nomeGrupoOfferTratado.toLowerCase().contains(constante_passaporte.toLowerCase())) {
+						reportHTML.test.log(LogStatus.INFO,
+								"Iniciando a associacao da Offer do novo plano passaporte de nome: " + nomeGrupoOffer);
+						reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+						
+						/*String nomeGrupoOfferpassaporteTratado = nomeGrupoOfferTratado.substring(0, nomeGrupoOfferTratado.indexOf("-"));
+						System.out.println(nomeGrupoOfferpassaporteTratado);
+
+						int contador1 = nomeGrupoOfferTratado.length();
+						int posicaoDinamica1 = 0;
+						for (int i1 = 0; i1 < contador1; i1++) {
+							if (nomeGrupoOfferTratado.substring(i1, i1 + 1).equals("-")) {
+								int posicao1 = i1;
+								selectNomeGrupoOffer = nomeGrupoOfferTratado.substring(posicao1, contador1);
+								posicaoDinamica1 = posicao1 + 1;
+							}
+						}*/
+
+						click(driver, AssociarPacotePageObject.linkGrupoOffers);
+						click(driver, AssociarPacotePageObject.linkAssociarPacote);
+						fillInput(driver, AssociarPacotePageObject.inputNomeGrupoOffer, "PAS");
+						click(driver, AssociarPacotePageObject.clickButtonPesquisar);
+						//selectElementByIndexMethod(driver, AssociarPacotePageObject.selectListaGrupoOffer, 1);
+						selectElementVisibleText(driver, AssociarPacotePageObject.selectListaGrupoOffer,"Passaporte");
+						fillInput(driver, AssociarPacotePageObject.inputNomeOffer, nomeGrupoOfferTratado);
+						click(driver, AssociarPacotePageObject.clickButtonFiltrar);
+						selectElementByIndexMethod(driver, AssociarPacotePageObject.selectListMandatoryOffers, 0);
+						click(driver, AssociarPacotePageObject.clickButtonAddOffer);
+						reportHTML.test.log(LogStatus.INFO, "Offer associada com sucesso");
+						reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+						
+						fillInput(driver, AssociarPacotePageObject.inputNomePlano, nomePlano);
+						click(driver, AssociarPacotePageObject.clickButtonFiltrarPlano);
+						//selectElementByIndexListaUfPromocao(driver,AssociarPacotePageObject.selectListaPlano,AssociarPacotePageObject.clickButtonAddPlano);
+					}
+
+					posicaoDinamica = posicao + 1;
+				}
+			}
+		}
+		
+		/*click(driver, AssociarPacotePageObject.linkGrupoOffers);
+		click(driver, AssociarPacotePageObject.linkAssociarPacote);
+		fillInput(driver, AssociarPacotePageObject.inputNomeGrupoOffer, nomeGrupoOffer);
+		click(driver, AssociarPacotePageObject.clickButtonPesquisar);
+		selectElementVisibleText(driver, AssociarPacotePageObject.selectListaGrupoOffer, selectNomeGrupoOffer);
+		click(driver, AssociarPacotePageObject.clickButtonAddOffer);*/
+	}
+}

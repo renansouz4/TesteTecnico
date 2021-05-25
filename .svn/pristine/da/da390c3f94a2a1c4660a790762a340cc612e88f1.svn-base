@@ -1,0 +1,242 @@
+package TestCases;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.openqa.selenium.WebDriver;
+
+import com.relevantcodes.extentreports.LogStatus;
+
+import Actions.ComboSVAAction;
+import Actions.PacoteAction;
+import Actions.PlanoAction;
+import BancoDeDados.ConexaoComBancoDados;
+import ConstantsFramework.Constants_Framework;
+import ConstantsSuiteTests.ConstantsSpreadsheet;
+import EnumsDrivers.DriverType;
+import Json.Constants_JSON;
+import Json.JSONParserUtil;
+import Json.TestCaseObject;
+import ManagersDriver.WebDriverManager;
+import Report.ExtentReport;
+import Report.Report;
+import Spreadsheet.ObjectEnvironment;
+import Spreadsheet.Spreadsheet;
+
+@RunWith(Parameterized.class)
+public class TestCasePlano {
+
+	@Rule
+	public TestWatcher watchman = new TestWatcher() {
+		@Override
+		protected void failed(Throwable e, Description description) {
+			// reportHTML.test.log(LogStatus.FAIL, "TestCase finalizado com erro");
+			// AtualizarStatus.atualizarPlanilha(Constants.EXCEL_CRIAR_PLANO,TEST_CASE_ID,
+			// "FALIED");
+		}
+
+		@Override
+		protected void succeeded(Description description) {
+			// reportHTML.test.log(LogStatus.PASS, "TestCase finalizado com sucesso");
+			// AtualizarStatus.atualizarPlanilha(Constants.EXCEL_CRIAR_PLANO,TEST_CASE_ID,
+			// "PASSED");
+		}
+	};
+
+	private WebDriver driver;
+	ExtentReport reportHTML = new ExtentReport();
+	Report report;
+	PlanoAction planoAction;
+	ComboSVAAction comboSVAAction;
+	PacoteAction pacoteAction;
+	ConexaoComBancoDados bancoDeDados;
+	ObjectEnvironment environment;
+	private int ID_ULTIMO_REVERSADO;
+	private String NOME_PLANO_RESERVADO;
+
+	private String TEST_CASE_NAME;
+	private String USUARIO;
+	private String SENHA;
+	private String SQ_PLANO_PLANO_RESERVADO;
+	
+	private String PLANO_PERFIL;
+	private String PLANO_ID;
+	private String STATUS;	
+	private String CLARO_INTERNET;
+	private String DESCRICAO_PLANO_4G;
+	private String ESTADOS;
+	private String NOME_PLANO;
+	private String DESCRICAO_PLANO;
+	private String DESCRICAO_PLANO_ABREVIADA;
+	private String DETALHE_PLANO;
+	private String QTD_DEPEDENTE;
+	private String TECNOLOGIA;
+	private String TIPO_PLANO;
+	private String FLAG_PLANO_BL_INDIVIDUAL;
+	private String FLAG_PERMIT_INCLUSAO_DEPEN_BL;
+	private String FLAG_OBRIGADTORIO_DEPENDENTE;
+	private String FLAG_PERMIT_INCLUSAO_DEPEN_CONTROLE;
+	private String FLAG_PERMIT_DEPEN_COMPARTILHADO_OMS;
+	private String SELECIONAR_TIPO_CLIENTE;
+	private String SUB_TIPO_CLIENTE;
+    private String FLAG_PLANO_SUPER_CONTROLE;
+    private String CANAIS_VENDA;
+    private String LIST_OFFERS_ORBIGATORIAS;
+    private String LIST_OFFERS_NATIVAS;
+    private String LIST_PACOTE;
+    private String LIST_OFERTA_COMBO_SVA;
+	
+
+
+	public TestCasePlano(String PLANO_ID              ,
+			String PLANO_PERFIL                       ,       
+			String CLARO_INTERNET                     ,
+			String DESCRICAO_PLANO_4G                 ,
+			String ESTADOS                            ,
+			String NOME_PLANO                         ,
+			String DESCRICAO_PLANO                    ,
+			String DESCRICAO_PLANO_ABREVIADA          ,
+			String DETALHE_PLANO                      ,
+			String QTD_DEPEDENTE                      ,
+			String TECNOLOGIA                         ,
+			String TIPO_PLANO                         ,
+			String FLAG_PLANO_BL_INDIVIDUAL           ,
+			String FLAG_PERMIT_INCLUSAO_DEPEN_BL      ,
+			String FLAG_OBRIGADTORIO_DEPENDENTE       ,
+			String FLAG_PERMIT_INCLUSAO_DEPEN_CONTROLE,
+			String FLAG_PERMIT_DEPEN_COMPARTILHADO    ,
+			String SELECIONAR_TIPO_CLIENTE            ,
+			String SUB_TIPO_CLIENTE                   ,
+			String FLAG_PLANO_SUPER_CONTROLE          ,
+			String CANAIS_VENDA                       ,
+			String LIST_OFFERS_ORBIGATORIAS           ,
+			String LIST_OFFERS_NATIVAS                ,
+			String LIST_PACOTE                        ,
+			String LIST_OFERTA_COMBO_SVA         ) {
+		
+		this.PLANO_ID = PLANO_ID; 
+		this.PLANO_PERFIL = PLANO_PERFIL;
+		this.CLARO_INTERNET = CLARO_INTERNET;                    
+		this.DESCRICAO_PLANO_4G = DESCRICAO_PLANO_4G;              
+		this.ESTADOS = ESTADOS;                           
+		this.NOME_PLANO = NOME_PLANO;                       
+		this.DESCRICAO_PLANO = DESCRICAO_PLANO;                
+		this.DESCRICAO_PLANO_ABREVIADA = DESCRICAO_PLANO_ABREVIADA;       
+		this.DETALHE_PLANO = DETALHE_PLANO;                    
+		this.QTD_DEPEDENTE = QTD_DEPEDENTE;                      
+		this.TECNOLOGIA = TECNOLOGIA;                         
+		this.TIPO_PLANO = TIPO_PLANO;                        
+		this.FLAG_PLANO_BL_INDIVIDUAL = FLAG_PLANO_BL_INDIVIDUAL.substring(0, 1);           
+		this.FLAG_PERMIT_INCLUSAO_DEPEN_BL = FLAG_PERMIT_INCLUSAO_DEPEN_BL.substring(0, 1);      
+		this.FLAG_OBRIGADTORIO_DEPENDENTE = FLAG_OBRIGADTORIO_DEPENDENTE.substring(0, 1);      
+		this.FLAG_PERMIT_INCLUSAO_DEPEN_CONTROLE = FLAG_PERMIT_INCLUSAO_DEPEN_CONTROLE.substring(0, 1);
+		this.FLAG_PERMIT_DEPEN_COMPARTILHADO_OMS = FLAG_PERMIT_DEPEN_COMPARTILHADO.substring(0, 1);     
+		this.SELECIONAR_TIPO_CLIENTE = SELECIONAR_TIPO_CLIENTE;            
+		this.SUB_TIPO_CLIENTE = SUB_TIPO_CLIENTE;                   
+		this.FLAG_PLANO_SUPER_CONTROLE = FLAG_PLANO_SUPER_CONTROLE.substring(0, 1);          
+		this.CANAIS_VENDA = CANAIS_VENDA;                       
+		this.LIST_OFFERS_ORBIGATORIAS = LIST_OFFERS_ORBIGATORIAS;           
+		this.LIST_OFFERS_NATIVAS = LIST_OFFERS_NATIVAS;   
+		this.LIST_PACOTE = LIST_PACOTE;//.split(Pattern.quote(";"));
+		this.LIST_OFERTA_COMBO_SVA = LIST_OFERTA_COMBO_SVA;//.split(Pattern.quote(";"));   
+
+	}
+
+	@Before
+	public void setUp() {
+		driver = WebDriverManager.getDriver(DriverType.INTERNETEXPLORER);
+		report = new Report(driver);
+		planoAction = new PlanoAction(driver,reportHTML,report);
+		comboSVAAction = new ComboSVAAction(driver,reportHTML,report);
+		pacoteAction = new PacoteAction(driver,reportHTML,report);
+		bancoDeDados = new ConexaoComBancoDados();
+		environment = new ObjectEnvironment(Arrays.asList(Spreadsheet.getStringSpreadsheetAmbiente()));
+		TEST_CASE_NAME = PLANO_ID + " - " + NOME_PLANO;
+
+	}
+
+	@Parameterized.Parameters
+	public static Collection<Object> input() {
+		Object[] objeto = Spreadsheet.getArraySpreadsheetPlan(ConstantsSpreadsheet.EXCEL_PLANO);
+		return Arrays.asList(objeto);
+	}
+
+	@Test
+	public void planoTest() {
+				
+		NOME_PLANO_RESERVADO = "Plano reservado automation";
+
+		reportHTML.test = ExtentReport.extent.startTest(TEST_CASE_NAME);
+		reportHTML.test.log(LogStatus.INFO, "Iniciando a execucao do teste "+TEST_CASE_NAME+" ...");
+		
+		planoAction.realizarLogin(environment.getUSER_SISTEMA(), environment.getPASS_SISTEMA());		
+		planoAction.criarPlanoReservado(NOME_PLANO_RESERVADO);
+		SQ_PLANO_PLANO_RESERVADO = bancoDeDados.buscaUltimoPlReservadoSQ_PLANO(NOME_PLANO_RESERVADO);
+		planoAction.ativarPlano(NOME_PLANO_RESERVADO, "Sao Paulo", "23052019");		
+		planoAction.alterarPlanoReservado("Sao Paulo"                         ,
+				                          NOME_PLANO_RESERVADO                ,
+				                          NOME_PLANO                     	  , 
+				                          DESCRICAO_PLANO                     , 
+				                          CLARO_INTERNET                      , 
+				                          TECNOLOGIA                          , 
+				                          TIPO_PLANO                          ,
+				                          FLAG_PERMIT_INCLUSAO_DEPEN_BL       ,
+				                          FLAG_OBRIGADTORIO_DEPENDENTE        ,
+				                          FLAG_PERMIT_INCLUSAO_DEPEN_CONTROLE ,
+				                          FLAG_PERMIT_DEPEN_COMPARTILHADO_OMS ,
+				                          SUB_TIPO_CLIENTE                    ,
+				                          CANAIS_VENDA                        ,
+				                          ESTADOS);		
+		String planoAssocia = NOME_PLANO +" - "+TECNOLOGIA+" - (SP)";
+		planoAction.associarPlano("Sao Paulo"               ,
+				                  NOME_PLANO                ,
+				                  planoAssocia              ,
+				                  LIST_OFFERS_ORBIGATORIAS  ,
+				                  LIST_OFFERS_NATIVAS   );		
+		pacoteAction.associarPacoteFamiliaNovo(LIST_PACOTE);		
+		comboSVAAction.associarComboSVA( NOME_PLANO,
+				                         NOME_PLANO+" - "+TECNOLOGIA,
+				                         LIST_OFERTA_COMBO_SVA);
+		
+		reportHTML.test.log(LogStatus.INFO, "Execucao do teste "+TEST_CASE_NAME+" finalizado.");
+		
+		
+	}
+
+	@After
+	public void fim() throws Exception {
+		ExtentReport.extent.flush();
+		report.createReportPdf(TEST_CASE_NAME);
+		writeJsonFile();
+		//driver.close();
+	    //driver.quit();
+	}
+
+	private void writeJsonFile() {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
+		objectMap.put(Constants_JSON.JSON_DATA_TESTE, dtf.format(now));
+		objectMap.put(Constants_JSON.JSON_AMBIENTE, environment.getENVIRONMENT());
+		objectMap.put(Constants_JSON.JSON_NOME_PLANO, this.NOME_PLANO);
+		objectMap.put(Constants_JSON.JSON_SQ_PLANO, this.SQ_PLANO_PLANO_RESERVADO);
+		objectMap.put(Constants_JSON.JSON_PLANO_PERFIL, this.PLANO_PERFIL);
+		objectMap.put(Constants_JSON.JSON_PLANO_ID, this.PLANO_ID);
+
+		TestCaseObject testCaseObject = new TestCaseObject(this.PLANO_ID, objectMap);
+		JSONParserUtil.writeJsonFile(testCaseObject);
+	}
+}

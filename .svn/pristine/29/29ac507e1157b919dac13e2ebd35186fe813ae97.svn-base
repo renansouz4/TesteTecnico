@@ -1,0 +1,144 @@
+package TestCases;
+
+import static org.junit.Assert.*;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.openqa.selenium.WebDriver;
+
+import com.relevantcodes.extentreports.LogStatus;
+
+import Actions.OfertaDependenteAction;
+import Actions.PlanoAction;
+import BancoDeDados.ConexaoComBancoDados;
+import ConstantsFramework.Constants_Framework;
+import ConstantsSuiteTests.ConstantsSpreadsheet;
+import EnumsDrivers.DriverType;
+import Json.Constants_JSON;
+import Json.JSONParserUtil;
+import Json.TestCaseObject;
+import ManagersDriver.WebDriverManager;
+import Report.ExtentReport;
+import Report.Report;
+import Spreadsheet.ObjectEnvironment;
+import Spreadsheet.Spreadsheet;
+
+
+@RunWith(Parameterized.class)
+public class TestCaseOferta {
+
+	@Rule
+	public TestWatcher watchman = new TestWatcher() {
+		@Override
+		protected void failed(Throwable e, Description description) {
+			// reportHTML.test.log(LogStatus.FAIL, "TestCase finalizado com erro");
+			// AtualizarStatus.atualizarPlanilha(Constants.EXCEL_CRIAR_PLANO,TEST_CASE_ID,
+			// "FALIED");
+		}
+
+		@Override
+		protected void succeeded(Description description) {
+			// reportHTML.test.log(LogStatus.PASS, "TestCase finalizado com sucesso");
+			// AtualizarStatus.atualizarPlanilha(Constants.EXCEL_CRIAR_PLANO,TEST_CASE_ID,
+			// "PASSED");
+		}
+	};
+
+	private WebDriver driver;
+	ExtentReport reportHTML = new ExtentReport();
+	Report report;
+	PlanoAction planoAction;
+	OfertaDependenteAction ofertaDependenteAction;
+	ConexaoComBancoDados bancoDeDados;
+	ObjectEnvironment environment;
+
+	private String TEST_CASE_NAME;	
+	private String OFERTA_ID;
+	private String STATUS;
+	private String OFERTA;
+	private String TIPO_PRODUTO;
+	private String NOME_PLANO;
+
+
+	public TestCaseOferta(String OFERTA_ID     ,
+			              String STATUS        ,
+			              String OFERTA        ,
+			              String TIPO_PRODUTO  ,
+			              String NOME_PLANO           ) {        
+
+		this.OFERTA_ID = OFERTA_ID;        
+		this.STATUS = STATUS;            
+		this.OFERTA = OFERTA;      
+		this.TIPO_PRODUTO = TIPO_PRODUTO;      
+		this.NOME_PLANO = NOME_PLANO;         
+	}
+
+	@Before
+	public void setUp() {
+		driver = WebDriverManager.getDriver(DriverType.INTERNETEXPLORER);
+		report = new Report(driver);
+		ofertaDependenteAction = new OfertaDependenteAction(driver,reportHTML,report);
+		planoAction = new PlanoAction(driver,reportHTML,report);
+		environment = new ObjectEnvironment(Arrays.asList(Spreadsheet.getStringSpreadsheetAmbiente()));
+		TEST_CASE_NAME = OFERTA_ID +" - "+OFERTA;
+	}
+
+	@Parameterized.Parameters
+	public static Collection<Object> input() {
+		Object[] objeto = Spreadsheet.getStringSpreadsheetOferta(ConstantsSpreadsheet.EXCEL_OFERTA);
+		return Arrays.asList(objeto);
+	}
+
+	@Test
+	public void ofertaTest() {
+		
+		reportHTML.test = ExtentReport.extent.startTest(TEST_CASE_NAME);
+		reportHTML.test.log(LogStatus.INFO, "Iniciando a execucao do teste "+TEST_CASE_NAME+" ...");		
+		reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+		
+		planoAction.realizarLogin(environment.getUSER_SISTEMA(), environment.getPASS_SISTEMA());
+		ofertaDependenteAction.associarOfertaDependente(OFERTA      ,
+				                                        TIPO_PRODUTO,
+				                                        NOME_PLANO);
+		
+		reportHTML.test.log(LogStatus.INFO, "Execucao do teste "+TEST_CASE_NAME+" finalizado.");	
+	}
+
+	@After
+	public void fim() throws Exception {
+		/*ExtentReport.extent.flush();
+		report.createReportPdf(TEST_CASE_NAME);
+		writeJsonFile();
+		 driver.close();
+	     driver.quit();*/
+	}
+
+	private void writeJsonFile() {
+		Map<String, Object> objectMap = new HashMap<String, Object>();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
+		objectMap.put(Constants_JSON.JSON_DATA_TESTE, dtf.format(now));
+		objectMap.put(Constants_JSON.JSON_AMBIENTE, environment.getENVIRONMENT());
+		objectMap.put(Constants_JSON.JSON_NOME_PLANO, this.NOME_PLANO);
+		objectMap.put(Constants_JSON.JSON_NOME_OFERTA, this.OFERTA);
+		objectMap.put(Constants_JSON.JSON_OFERTA_ID, this.OFERTA_ID);
+		objectMap.put(Constants_JSON.JSON_OFERTA_TIPO_PRODUTO, this.TIPO_PRODUTO);
+		
+		TestCaseObject testCaseObject = new TestCaseObject(this.OFERTA_ID, objectMap);
+		JSONParserUtil.writeJsonFile(testCaseObject);
+	}
+
+}

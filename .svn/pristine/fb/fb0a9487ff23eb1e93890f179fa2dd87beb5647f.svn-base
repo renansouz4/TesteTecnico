@@ -1,0 +1,8 @@
+package ConstantsSuiteTests;
+public class ConstanteUrlBroweser  {
+
+	public static final String URL_CLARO = "http://TORRINHA:7141/ClaroAdministradorWeb";
+	//public static final String URL_CLARO = "http://TORRINHA:6241/ClaroAdministradorWeb";
+	public static final String URL_NOME_SISTEMA = "";
+	
+}

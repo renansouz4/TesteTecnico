@@ -1,0 +1,11 @@
+environment=local
+browser=chrome
+windowMaximize=false
+implicitlyWait=20
+url=http://www.shop.demoqa.com
+reportConfigPath=C:\\Users\\fernando.f.andrade\\eclipse-workspace\\FrameworkO2M\\configs\\extent-config.xml
+printsPath=C:\\Users\\fernando.f.andrade\\Documents\\Projetos\\FrameWork\\prints\\
+relatoriPdfPath=C:\\Users\\fernando.f.andrade\\Documents\\Projetos\\FrameWork\\pdf\\RelatorioPdf.pdf
+relatorioVideoPath=C:\\Users\\fernando.f.andrade\\Documents\\Projetos\\FrameWork\\Video\\
+excelFile=C:\\Temp\\MyFirstExcel.xls
+imageProject=C:\Users\fernando.f.andrade\Pictures\\banco-bradesco-logo.png

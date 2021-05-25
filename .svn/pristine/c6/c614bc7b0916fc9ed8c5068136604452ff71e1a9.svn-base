@@ -1,0 +1,174 @@
+package Actions;
+
+import static org.junit.Assert.fail;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import com.relevantcodes.extentreports.LogStatus;
+import AcoesFindElement.AcoesFindElement;
+import PageObjects.AlterarPlanoPageObject;
+import PageObjects.AssociarPlanoPageObject;
+import PageObjects.AtivarPlanoPageObject;
+import PageObjects.CriarPlanoPageObject;
+import PageObjects.LoginPageObject;
+import report.ExtentReport;
+import report.Report;
+
+/**
+ * - Class Action
+ * 
+ * @author rodrigo.c.almeida
+ * 
+ */
+public class ParametrizacaoAction extends AcoesFindElement {
+
+	private WebDriver driver;
+	String URL = ConstanteUrlBroweser.URL_CLARO;
+	private ExtentReport reportHTML;
+	private Report report;
+
+	/**
+	 * - Construtor da Class.
+	 */
+	public ParametrizacaoAction(WebDriver driver, ExtentReport reportHTML, Report report) {
+		this.driver = driver;
+		this.reportHTML = reportHTML;
+		this.report = report;
+	}
+
+	/**
+	 * - Método responsável por realizar o Login na aplicação.
+	 */
+	public void realizarLogin(String user, String senha) {
+		openURL(driver, URL);
+		fillInput(driver, LoginPageObject.inputUsuario, user);
+		fillInput(driver, LoginPageObject.inputSenha, senha);
+		click(driver, LoginPageObject.clickEntrar);
+		reportHTML.test.log(LogStatus.PASS, "Login realizando com sucesso.");
+		reportHTML.test.log(LogStatus.PASS, reportHTML.test.addScreenCapture(report.capturar()));
+	}
+
+	/**
+	 * - Método responsável por criar o plano reservado.
+	 */
+	public void criarPlanoReservado(String nomePlano) {
+		click(driver, CriarPlanoPageObject.linkPlano);
+		click(driver, CriarPlanoPageObject.linkCriarPlano);
+		System.out.println(getText(driver, CriarPlanoPageObject.getTextTESTE));
+		reportHTML.test.log(LogStatus.INFO, "Iniciando a criacao de plano reservado.");
+		reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+		fillInput(driver, CriarPlanoPageObject.inputNomePlano, nomePlano);
+		fillInput(driver, CriarPlanoPageObject.inputDescricaoPlano, nomePlano);
+		click(driver, CriarPlanoPageObject.linkMarcaTodosCanais);
+		click(driver, CriarPlanoPageObject.linkMarcaTodosEstados);
+		reportHTML.test.log(LogStatus.INFO, "Os campos foram preenchidos com sucesso.");
+		reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+		click(driver, CriarPlanoPageObject.buttonCriarPlano);
+		getText(driver, CriarPlanoPageObject.getTextMensagemCriacaoSucesso);
+
+		if (getText(driver, CriarPlanoPageObject.getTextMensagemCriacaoSucesso)
+				.equals(ConstanteV.MSG_PLANO_RESERVADO_CRIADO_SUCESSO)) {
+			reportHTML.test.log(LogStatus.PASS, "Plano reservado " + nomePlano + " criando com sucesso.");
+			reportHTML.test.log(LogStatus.PASS, reportHTML.test.addScreenCapture(report.capturar()));
+		} else {
+			reportHTML.test.log(LogStatus.FAIL, "Erro na criacao do plano reservado");
+			reportHTML.test.log(LogStatus.FAIL, reportHTML.test.addScreenCapture(report.capturar()));
+			fail("Erro na criacao do plano reservado");
+		}
+	}
+
+	/**
+	 * - Método responsável por ativar o plano reservado.
+	 */
+	public void ativarPlano(String nomePlano, String estado, String dataAtivar) {
+		click(driver, AtivarPlanoPageObject.linkPlano);
+		click(driver, AtivarPlanoPageObject.linkAtivarPlano);
+		reportHTML.test.log(LogStatus.INFO, "Iniciando a ativacao do plano reservado.");
+		reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+		selectElementVisibleText(driver, AtivarPlanoPageObject.selectEstado, estado);
+		fillInput(driver, AtivarPlanoPageObject.inputNomePlano, nomePlano);
+		click(driver, AtivarPlanoPageObject.buttonPesquisa);
+		clickCheckbox(driver, AtivarPlanoPageObject.checkFlagAtivarDest, ConstanteV.ATIVAR);
+		fillInput(driver, AtivarPlanoPageObject.inputDataAtivarDest, dataAtivar);
+		reportHTML.test.log(LogStatus.INFO, "Os campos foram preenchidos com sucesso.");
+		reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+		click(driver, AtivarPlanoPageObject.buttonSalva);
+
+		if (getText(driver, AtivarPlanoPageObject.getTextMensagemAtivacaoSucesso)
+				.equals(ConstanteV.MSG_PLANO_RESERVADO_ATIVADO_SUCESSO)) {
+			reportHTML.test.log(LogStatus.PASS, "Plano reservado " + nomePlano + " ativado com sucesso.");
+			reportHTML.test.log(LogStatus.PASS, reportHTML.test.addScreenCapture(report.capturar()));
+		} else {
+			reportHTML.test.log(LogStatus.FAIL, "Erro na ativacao do plano reservado");
+			reportHTML.test.log(LogStatus.FAIL, reportHTML.test.addScreenCapture(report.capturar()));
+			fail("Erro na ativacao do plano reservado");
+		}
+	}
+
+	/**
+	 * - Método responsável por alterar o plano reservado com as informações da
+	 * planilha.
+	 */
+	/*
+	 * public void alterarPlanoReservado(String nomePlano, String estado, String
+	 * nomePlanoNovo, String descricaoPlanoNovo, String descricaoPrecarioNovo,
+	 * String descricaoAbreviadaNovo, String planoAtivo, String tipoTecnologia,
+	 * String ValueValidarCobertura, String ValueTripleA, String tipoPlano, String
+	 * ValuePermiteDepedenteBL, String ValueObrigatorioDependente, String
+	 * ValueApresentarPlanoOMS) {
+	 */
+
+	public void alterarPlanoReservado(String estado, String nomePlano, String nomePlanoNovo, String descricaoPlanoNovo,
+			String descricaoPrecarioNovo, String descricaoAbreviadaNovo, String planoAtivo, String tipoTecnologia,
+			String ValueValidarCobertura, String ValueTripleA, String tipoPlano, String ValuePermiteDepedenteBL,
+			String ValueObrigatorioDependente,String ValuePermiteDependenteControle,String ValueApresentarPlanoOMS) {
+		click(driver, AlterarPlanoPageObject.linkPlano);
+		click(driver, AlterarPlanoPageObject.linkAlterarPlano);
+		reportHTML.test.log(LogStatus.INFO, "Iniciando a alteracao do plano reservado.");
+		reportHTML.test.log(LogStatus.INFO, reportHTML.test.addScreenCapture(report.capturar()));
+		selectElementVisibleText(driver, AtivarPlanoPageObject.selectEstado, estado);
+		fillInput(driver, CriarPlanoPageObject.inputNomePlano, nomePlano);
+		click(driver, AtivarPlanoPageObject.buttonPesquisa);
+		selectElementByIndexMethod(driver, AtivarPlanoPageObject.selectTiposPlanos, 1);
+		fillInput(driver, AlterarPlanoPageObject.inputNomePlanoNovo, nomePlanoNovo);
+		fillInput(driver, AlterarPlanoPageObject.inputDescricaoPlanoNovo, descricaoPlanoNovo);
+		fillInput(driver, AlterarPlanoPageObject.inputDescricaoPrecarioPlanoNovo, descricaoPrecarioNovo);
+		fillInput(driver, AlterarPlanoPageObject.inputDescricaoAbreviadaPlanoNovo, descricaoAbreviadaNovo);
+		selectElementVisibleText(driver, AlterarPlanoPageObject.selectPlanoAtivo, planoAtivo);
+		selectElementVisibleText(driver, AlterarPlanoPageObject.selectTipoTecnologia, tipoTecnologia);
+		clickCheckbox(driver, AlterarPlanoPageObject.checkedValidarCobertura, ValueValidarCobertura);
+		clickCheckbox(driver, AlterarPlanoPageObject.checkedTripleA, ValueTripleA);
+		selectElementVisibleText(driver, AlterarPlanoPageObject.selectTipoPlano, tipoPlano);
+		clickCheckbox(driver, AlterarPlanoPageObject.checkedPermiteDependenteBL, ValuePermiteDepedenteBL);
+		clickCheckbox(driver, AlterarPlanoPageObject.checkedObrigatorioDependente, ValueObrigatorioDependente);
+		 clickCheckbox(driver, AlterarPlanoPageObject.checkedPermiteDependenteControle, ValuePermiteDependenteControle); 
+		 clickCheckbox(driver, AlterarPlanoPageObject.checkedApresentarPlanoOMS, ValueApresentarPlanoOMS);
+		 
+		 
+	}
+	
+	public void associarPlano(String estado, String nomePlano, String tipoPlano, String nomeOffer,
+			String offerObr, String offerNtv, String offerAdc) {
+		click(driver, AssociarPlanoPageObject.linkPlano);
+		click(driver, AssociarPlanoPageObject.linkAssociarPlano);
+		selectElementVisibleText(driver, AssociarPlanoPageObject.selectEstado, estado);
+		fillInput(driver, AssociarPlanoPageObject.inputNomePlano, nomePlano);		
+		click(driver, AssociarPlanoPageObject.buttonPesquisar);
+		selectElementVisibleText(driver, AssociarPlanoPageObject.selectPlano, tipoPlano);
+		fillInput(driver, AssociarPlanoPageObject.inputNomeOffer, nomeOffer);
+		click(driver, AssociarPlanoPageObject.buttonFiltrar);
+		selectElementVisibleText(driver, AssociarPlanoPageObject.selectOfferObrigatoria, offerObr);
+		click(driver, AssociarPlanoPageObject.buttonAssociarOfferObr);
+		selectElementVisibleText(driver, AssociarPlanoPageObject.selectOfferNativa, offerNtv);
+		click(driver, AssociarPlanoPageObject.buttonAssociarOfferNtv);
+		selectElementVisibleText(driver, AssociarPlanoPageObject.selectPromoAdicional, offerAdc);
+		click(driver, AssociarPlanoPageObject.buttonAssociarPromoAdc);
+		
+		
+		
+	}
+	
+	
+}

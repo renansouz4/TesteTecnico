@@ -1,0 +1,14 @@
+[ {
+  "id" : null,
+  "attributes" : {
+    "ambiente" : "PLANTA_12",
+    "data_teste" : "26/06/2019 15:47:54"
+  }
+}, {
+  "id" : "PL1",
+  "attributes" : {
+    "nome_plano_reservado" : null,
+    "ambiente" : "PLANTA_12",
+    "data_teste" : "26/06/2019 17:39:52"
+  }
+} ]

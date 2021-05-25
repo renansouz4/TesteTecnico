@@ -1,0 +1,25 @@
+package PageObjects;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+public class AssociarPacotePageObject {
+	
+	public static final By linkGrupoOffers = By.id("imgsub990");
+	public static final By linkAssociarPacote = By.xpath("//a[@href='/ClaroAdministradorWeb/OffersAssociarGroupOffer.do']");
+	public static final By inputNomeGrupoOffer = By.name("offerGroupName");
+	public static final By clickButtonPesquisar = By.xpath("//*[starts-with(@onclick, 'doSearchGroup()')]");
+	public static final By selectListaGrupoOffer = By.name("tipoOfferGroup");
+	public static final By inputNomeOffer = By.name("offerNameFilter");
+	public static final By clickButtonFiltrar = By.xpath("//*[starts-with(@onclick, 'doFilterOffer()')]");
+	public static final By selectListMandatoryOffers = By.name("listMandatoryOffers");
+	public static final By clickButtonAddOffer = By.xpath("//*[starts-with(@onclick, 'direitaMandatory()')]");
+	public static final By inputNomePlano = By.name("planNameFilter");
+	public static final By clickButtonFiltrarPlano= By.xpath("//*[starts-with(@onclick, 'doFilterPlan()')]");
+	public static final By selectListaPlano = By.name("listMandatoryPlans");
+	public static final By clickButtonAddPlano = By.xpath("//*[starts-with(@onclick, 'direitaMandatoryPlan()')]");
+	
+	public static final By selectOfferPacote = By.name("listAssociatedMandatoryOffers");
+	public static final By clickButtonDeaddPlano = By.xpath("//*[starts-with(@onclick, 'esquerdaMandatory()')]");
+	
+}

@@ -1,0 +1,226 @@
+package SpreadsheetsSapGui;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import ConstantsSuiteTests.ConstanteV;
+import ConstantsSuiteTests.ConstantsSpreadsheet;
+
+public class SpreadsheetListPrice {
+
+	public void GerarPlanListaPrice(List Object) {
+
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet sheet = workbook.createSheet("ListaPreco");
+
+		// Definindo alguns padroes de layout
+		sheet.setDefaultColumnWidth(15);
+		sheet.setDefaultRowHeight((short) 400);
+
+		// Carregando os produtos
+		List<ObjectPlanListPrice> products = Object;
+
+		int rownum = 0;
+		int cellnum = 0;
+		Cell cell;
+		Row row;
+
+		// Configurando estilos de células (Cores, alinhamento, formatação, etc..)
+		XSSFDataFormat numberFormat = workbook.createDataFormat();
+
+		CellStyle headerStyle = workbook.createCellStyle();
+		headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		headerStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		headerStyle.setAlignment(CellStyle.ALIGN_CENTER);
+		headerStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+
+		CellStyle textStyle = workbook.createCellStyle();
+		textStyle.setAlignment(CellStyle.ALIGN_CENTER);
+		textStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+
+		CellStyle numberStyle = workbook.createCellStyle();
+		numberStyle.setDataFormat(numberFormat.getFormat("#,##0.00"));
+		numberStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+
+		// Configurando Header
+		row = sheet.createRow(rownum++);
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("SQ_COD");
+
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("NOME_PLANO");
+
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("TECNOLOGIA");
+
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("LP");
+
+		// Adicionando os dados dos produtos na planilha
+		for (ObjectPlanListPrice product : products) {
+			row = sheet.createRow(rownum++);
+			cellnum = 0;
+
+			cell = row.createCell(cellnum++);
+			cell.setCellStyle(textStyle);
+			cell.setCellValue(product.getSQ_COD());
+
+			cell = row.createCell(cellnum++);
+			cell.setCellStyle(textStyle);
+			cell.setCellValue(product.getNOME_PLANO());
+
+			cell = row.createCell(cellnum++);
+			cell.setCellStyle(numberStyle);
+			cell.setCellValue(product.getTECNOLOGIA());
+
+			cell = row.createCell(cellnum++);
+			cell.setCellStyle(numberStyle);
+			cell.setCellValue(product.getLP());
+		}
+
+		try {
+
+			// Escrevendo o arquivo em disco
+			FileOutputStream out = new FileOutputStream(new File(ConstantsSpreadsheet.EXCEL_LISTA_PRECO));
+			workbook.write(out);
+			out.close();
+			System.out.println("Success!!");
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	
+	public void GerarPlanListaPriceXEstados(List Object) {
+
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet sheet = workbook.createSheet("ListaPreco");
+		
+		List<String> listRG = new ArrayList(Arrays.asList (ConstanteV.RG_ALL));
+
+		// Definindo alguns padroes de layout
+		sheet.setDefaultColumnWidth(15);
+		sheet.setDefaultRowHeight((short) 400);
+
+		// Carregando os produtos
+		List<ObjectPlanListPrice> products = Object;
+
+		int rownum = 0;
+		int cellnum = 0;
+		Cell cell;
+		Row row;
+
+		// Configurando estilos de células (Cores, alinhamento, formatação, etc..)
+		XSSFDataFormat numberFormat = workbook.createDataFormat();
+
+		CellStyle headerStyle = workbook.createCellStyle();
+		headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		headerStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		headerStyle.setAlignment(CellStyle.ALIGN_CENTER);
+		headerStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+
+		CellStyle textStyle = workbook.createCellStyle();
+		textStyle.setAlignment(CellStyle.ALIGN_CENTER);
+		textStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+
+		CellStyle numberStyle = workbook.createCellStyle();
+		numberStyle.setDataFormat(numberFormat.getFormat("#,##0.00"));
+		numberStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+
+		// Configurando Header
+		row = sheet.createRow(rownum++);
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("RG");
+
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("LP");
+
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("ID");
+
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("XXXX");
+		
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("COD RG");
+		
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("XXXX");
+		
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("XXXX");
+		
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("TIPO");
+		
+		cell = row.createCell(cellnum++);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("NOME");
+
+		// Adicionando os dados dos produtos na planilha
+		for (ObjectPlanListPrice product : products) {
+			row = sheet.createRow(rownum++);
+			cellnum = 0;
+
+			cell = row.createCell(cellnum++);
+			cell.setCellStyle(textStyle);
+			cell.setCellValue(product.getSQ_COD());
+
+			cell = row.createCell(cellnum++);
+			cell.setCellStyle(textStyle);
+			cell.setCellValue(product.getNOME_PLANO());
+
+			cell = row.createCell(cellnum++);
+			cell.setCellStyle(numberStyle);
+			cell.setCellValue(product.getTECNOLOGIA());
+
+			cell = row.createCell(cellnum++);
+			cell.setCellStyle(numberStyle);
+			cell.setCellValue(product.getLP());
+		}
+
+		try {
+
+			// Escrevendo o arquivo em disco
+			FileOutputStream out = new FileOutputStream(new File(ConstantsSpreadsheet.EXCEL_LISTA_PRECO));
+			workbook.write(out);
+			out.close();
+			System.out.println("Success!!");
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+}

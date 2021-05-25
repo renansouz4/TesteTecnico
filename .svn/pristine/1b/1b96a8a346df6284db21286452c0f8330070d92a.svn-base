@@ -1,0 +1,60 @@
+package PageObjects;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+public class AssociarPromocaoPageObject {
+	
+	public static final By linkPromocao = By.id("imgsub700");
+	public static final By linkAssociarPromocao = By.xpath("//a[@href='/ClaroAdministradorWeb/PromoAssociarPromocao.do']");
+	public static final By checkedTipoPromocao = By.name("tipo");
+	public static final By checkedVigenciaPromocao = By.name("filtroPrmocaoVigente");
+	public static final By inputNomePromocao = By.name("nomePromocao");
+	public static final By clickButtonPesquisa = By.xpath("//*[starts-with(@value, 'Pesquisar')]");
+	public static final By selectListaPromocao = By.name("tipoPromocao");
+	public static final By selectRegionaisPromocao = By.name("listOffers");
+	
+	public static final By teste = By.xpath("//*[starts-with(@size, '7')]");
+	
+	public static final By inputNomeoffer = By.name("offerNameFilter");
+	public static final By clickButtonFiltrarOffers= By.xpath("//*[starts-with(@onclick, 'doFilterOffer()')]");
+	public static final By selectListaOffers = By.name("listOffers");
+	public static final By clickButtonAddOffers = By.xpath("/HTML/BODY/CENTER/TABLE/TBODY/TR[2]/TD[2]/FORM/TABLE[3]/TBODY/TR[14]/TD/TABLE/TBODY/TR/TD[2]/INPUT[1]");
+	
+	public static final By inputNomePlano = By.name("planNameFilter");
+	public static final By clickButtonFiltrarPlanos= By.xpath("//*[starts-with(@onclick, 'doFilterPlan()')]");
+	public static final By selectListaPlano = By.name("listPlanos");
+	public static final By clickButtonAddPlano = By.xpath("/HTML/BODY/CENTER/TABLE/TBODY/TR[2]/TD[2]/FORM/TABLE[3]/TBODY/TR[21]/TD/TABLE/TBODY/TR/TD[2]/INPUT[1]");
+	
+	public static final By inputNomeOperacao = By.name("operationNameFilter");
+	public static final By clickButtonFiltrarOperacao = By.xpath("//*[starts-with(@onclick, 'doFilterOperation()')]");
+	public static final By selectListaOperacao = By.name("listOperacoes");
+	public static final By clickButtonAddOperacao = By.xpath("/HTML/BODY/CENTER/TABLE/TBODY/TR[2]/TD[2]/FORM/TABLE[3]/TBODY/TR[27]/TD/TABLE/TBODY/TR/TD[2]/INPUT[1]");
+	
+	public static final By inputNomeMunicipios = By.name("municipioNameFilter");
+	public static final By clickButtonFiltrarMunicipios = By.xpath("//*[starts-with(@onclick, 'doFilterMunicipio()')]");
+	public static final By selectListaMunicipios = By.name("listMunicipios");
+	public static final By clickButtonAddMunicipios = By.xpath("//*[starts-with(@onclick, 'doAssociatePromotionMunicipio('Add')')]");
+	
+	public static final By inputNomeListaPontosVenda = By.name("pdvNameFilter");
+	public static final By clickButtonFiltrarListaPontosVenda = By.xpath("//*[starts-with(@onclick, 'doAssociatePromotionPdv('filter')')]");
+	public static final By selectListaListaPontosVenda = By.name("listPdvs");
+	public static final By clickButtonAddListaPontosVenda = By.xpath("//*[starts-with(@onclick, 'doAssociatePromotionPdv('Add');')]");
+	
+
+	public static final By clickButtonAssociarAparelhos = By.xpath("//*[starts-with(@onclick, 'doTelaAparelhos()')]");
+	public static final By selectListaAparelhos = By.name("");
+	public static final By clickButtonAddAparelhos = By.name("");
+	
+	public static final By selectlistAssociateOffers = By.name("listAssociateOffers");
+	public static final By clickButtonDeleteOffers = By.xpath("/html/body/center/table/tbody/tr[2]/td[2]/form/table[3]/tbody/tr[14]/td/table/tbody/tr/td[2]/input[2]");
+
+	public static final By selectlistAssociatePlano = By.name("listAssociatePlanos");
+	public static final By clickButtonDeletePlano = By.xpath("/html/body/center/table/tbody/tr[2]/td[2]/form/table[3]/tbody/tr[21]/td/table/tbody/tr/td[2]/input[2]");
+
+	public static final By selectlistAssociateOperacoes = By.name("listAssociarOperacoes");
+	public static final By clickButtonDeleteOperacoes = By.xpath("/html/body/center/table/tbody/tr[2]/td[2]/form/table[3]/tbody/tr[27]/td/table/tbody/tr/td[2]/input[2]");
+
+	
+	
+}

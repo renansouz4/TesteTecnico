@@ -1,0 +1,26 @@
+[ {
+  "id" : "PL2",
+  "attributes" : {
+    "nome_plano_reservado" : null,
+    "ambiente" : "PLANTA_12",
+    "data_teste" : "26/06/2019 17:39:52"
+  }
+}, {
+  "id" : "PL1",
+  "attributes" : {
+    "plano_perfil" : "SINGLE",
+    "sq_plano" : null,
+    "ambiente" : "PLANTA_12",
+    "plano_id" : "PL1",
+    "nome_plano" : "Claro Internet Mais 20GB - Rodrigo",
+    "data_teste" : "22/07/2019 12:38:32"
+  }
+}, {
+  "id" : "PROMC3",
+  "attributes" : {
+    "nome_promocao" : "CLARO POS AUTOMATION 2",
+    "promocao_id" : "PROMC3",
+    "ambiente" : "PLANTA_12",
+    "data_teste" : "22/07/2019 18:02:45"
+  }
+} ]
